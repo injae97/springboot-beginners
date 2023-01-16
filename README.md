@@ -57,5 +57,5 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
         - /dev-delivery/src/main/webapp/WEB-INF/view/home.jsp 
 		
 ## 💡 HOW TO SOLVE SOURCE CODE NON-RECOGNITION ON JSP FILE?
-    - Help > Eclipse Marketplace > eclipse web search 
+    - Help > Eclipse Marketplace > eclipse web search
 	    > eclipse enterprise java and web developer tools 3.24 Download > Restart
