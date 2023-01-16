@@ -17,7 +17,10 @@
                      <div>
                          <!-- 우편번호를 hidden으로 숨긴 후 값을 받기 위한 용도 -->
                          <input type="hidden" id="deleveryAddress1" placeholder="우편번호" value="${BMaddress.address1}" name="address1" readonly>
-                         <input type="text" value="${BMaddress.address2}" id="deleveryAddress2" readonly placeholder="주소를 입력해 주세요" name="address2"><br>
+                         
+                         <!-- 주소를 입력해주세요 클릭시 onclick="modifyAddress() 함수를 통해 -->
+                         <!-- modifyAddress.jsp 안에 있는 modifyAddress() 매서드 호출 -->
+                         <input type="text" value="${BMaddress.address2}" id="deleveryAddress2" onclick="modifyAddress()" readonly placeholder="주소를 입력해 주세요" name="address2"><br>
                      </div>
  
                      <div class="search_btn">
@@ -26,6 +29,8 @@
                          </label>
                          <input type="button" name="search" id="search_btn">
                      </div>
+                     <!-- 다음-우편번호 API 추가 -->
+                     <%@ include file="/WEB-INF/view/include/modifyAddress.jsp" %>
                  </div>
             </section>
             
