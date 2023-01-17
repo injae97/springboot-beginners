@@ -11,6 +11,7 @@
         <div class="login_box">
 			<a href="/"><img src="/img/bamin2.png" alt="이미지" class="bm_img"></a>    
             
+     	    <!-- form 태그는 input 태그의 값을 서버로 name으로 준 값들 전달 -->
             <form action="/login" method="post">
  
 	            <div class="input_aera"><input type="text" name="username"  value="" required placeholder="이메일을 입력해 주세요" maxlength="30" ></div>
