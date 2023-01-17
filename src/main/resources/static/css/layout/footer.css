@@ -1,8 +1,3 @@
-/* -------------  í‘¸í„° ------------- */
-
-
-
-
 footer {
     background-color:#2AC1BC;
     height: 130px;
@@ -18,9 +13,12 @@ footer .box {
 	height: 80px;
 }
 
-/* -------------  í‘¸í„° ------------- */
-
-
+/* 
+@media : ´Ù¸¥ ÇÁ·Î±×·¡¹Ö ¾ð¾îÀÇ if Á¶°Ç¹®°ú ºñ½ÁÇÑ °³³ä
+@media (Á¶°Ç) {
+  ½ºÅ¸ÀÏ
+} 
+*/
 @media (min-width:768px) and (max-width:1023px) {
 }
 @media  (max-width:767px) {

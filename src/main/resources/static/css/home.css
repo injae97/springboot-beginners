@@ -2,7 +2,6 @@ body {
 	/* overflow-x: hidden;  */
 }
 
-
 .wrap {
     width: 95%;
     margin: 0 auto;
@@ -12,7 +11,6 @@ main {
    background: #fff; 
    padding-bottom: 50px;
 }
-
 
 .address_search #search_box {
    	width: 50%;
@@ -105,8 +103,12 @@ main {
 	font-size: 1.6rem;
 }
 
-
-
+/* 
+@media : 다른 프로그래밍 언어의 if 조건문과 비슷한 개념
+@media (조건) {
+  스타일
+} 
+*/
 @media  (max-width:1023px) {
 	.address_search #search_box {
 	    width: 50%;
@@ -116,16 +118,14 @@ main {
 	.category_box .box {
 		width: 95%;
 	}
-	
 }
-
 
 @media (max-width:767px) {
 
 	.address_search #search_box {
 	    width: 75%;
 	}
-	 
+	
 	.category_box .box {
 		width: 100%;
 	}
@@ -135,9 +135,4 @@ main {
 	.address_search #search_box {
 	    width: 90%;
 	}
-	
-	
 }
-
-
-

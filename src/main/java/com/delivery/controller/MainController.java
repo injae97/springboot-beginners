@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class MainController {
  
+	/*
+	 * @GetMapping 으로 "/" 접근 시 home.jsp 화면 띄워줌
+	 */
 	@GetMapping("/")
 	public String test() {
 		return "home";
@@ -25,10 +28,10 @@ public class MainController {
 	
 	/*
 	 * 다음 - 우편번호 API
-	 * modifyAddress.jsp 에서 ajax로 호출되어 아래 매서드 진행
+	 * postcode-API.jsp 에서 ajax로 호출되어 아래 매서드 진행
 	 */	
 	@ResponseBody
-	@PostMapping("/addressModify")
+	@PostMapping("/postcode-ajax")
 	public void addressModify(String address1, String address2, HttpServletResponse response, HttpSession session)
 			throws UnsupportedEncodingException {
         

@@ -71,6 +71,12 @@ header img {
 	transform: translateY(-8px) rotate(45deg);
 }
 
+/* 
+@media : 다른 프로그래밍 언어의 if 조건문과 비슷한 개념
+@media (조건) {
+  스타일
+} 
+*/
 @media ( max-width :1250px) {
 	#header {
 		width: 99%;

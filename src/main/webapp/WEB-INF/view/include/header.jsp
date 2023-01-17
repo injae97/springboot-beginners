@@ -23,8 +23,6 @@ header .admin_page_btn a {
 </head>
 <body >
 	<!-- <body> -->
-
-
 	<header>
 		<div id="header">
 			<a href="/"><img src="/img/baemin.jpg" alt="이미지"> </a>
@@ -54,5 +52,3 @@ header .admin_page_btn a {
 		</div>
 	</header>
 	<!-- 헤더 -->
- 
-
