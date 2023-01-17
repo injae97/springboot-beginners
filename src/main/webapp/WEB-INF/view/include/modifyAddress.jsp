@@ -1,8 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
- 
+
 <input type="hidden" id="sample2_extraAddress" placeholder="참고항목" readonly>
- 
  
 <!-- iOS에서는 position:fixed 버그가 있음, 적용하는 사이트에 맞게 position:absolute 등을 이용하여 top,left값 조정 필요 -->
 <div id="layer"
@@ -22,9 +21,7 @@
 	function closeDaumPostcode() {
 		// iframe을 넣은 element를 안보이게 한다.
 		element_layer.style.display = 'none';
- 
 	}
- 
 	function modifyAddress() {
 		new daum.Postcode(
 				{
@@ -78,10 +75,11 @@
 						
 						$.ajax({
 							url: "/addressModify",
-							data: {address1 : data.zonecode , address2 : addr},
+							data: {address1 : data.zonecode,
+								   address2 : addr},
 							type: "post",
 							success: function(){
-								$(".address1").text(addr);
+								$(".address1").text(addr); // name = addclass1에 우편번호를 text로 보여줌
 								address1 = data.zonecode;
 							},
 							fail: function(){

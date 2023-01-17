@@ -164,14 +164,14 @@
  
 <script>
 	$(".category li").click(function(){
-		let address1 = $("#deleveryAddress1").val();
+		let address1 = $("#deleveryAddress1").val(); // name = address1 으로 설정된 값을 가져온다.
 		console.log("address1:", address1);
 		if(!address1) {
 			swal("배달 받으실 주소를 입력해 주세요");
 			return false;
 		}
 	
-		const index = $(this).index();	
+		const index = $(this).index(); // 음식 카테고리 클릭 시 인덱스 추가 0~11
 		location.href = "/store/" + (100 + index) + "/" + address1;
 	})
 </script>
