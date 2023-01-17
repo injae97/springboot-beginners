@@ -171,7 +171,7 @@
 			return false;
 		}
 	
-		const index = $(this).index(); // 음식 카테고리 클릭 시 인덱스 추가 0~11
+		const index = $(this).index(); // 음식 카테고리 클릭 시 인덱스 추가 0 ~ 11
 		location.href = "/store/" + (100 + index) + "/" + address1;
 	})
 </script>

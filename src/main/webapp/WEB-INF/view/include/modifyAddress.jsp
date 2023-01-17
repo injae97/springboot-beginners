@@ -75,11 +75,10 @@
 						
 						$.ajax({
 							url: "/addressModify",
-							data: {address1 : data.zonecode,
-								   address2 : addr},
+							data: {address1 : data.zonecode, address2 : addr},
 							type: "post",
 							success: function(){
-								$(".address1").text(addr); // name = addclass1에 우편번호를 text로 보여줌
+								$(".address1").text(addr); // name = addclass1에 우편번호를 text로 보여줌 (hidden 상태)
 								address1 = data.zonecode;
 							},
 							fail: function(){
