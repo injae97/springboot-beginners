@@ -1,10 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+
+<!-- link.jsp file을 현재 파일에 import  -->
 <%@ include file="/WEB-INF/view/include/link.jsp" %>
+<%@ include file="/WEB-INF/view/include/header.jsp" %>
+
+<!-- css file 적용 -->
 <link rel="stylesheet" href="/css/layout/nav.css">
 <link rel="stylesheet" href="/css/user/myPage.css">
- 
-<%@ include file="/WEB-INF/view/include/header.jsp" %>
  
 	<div class="wrap"> 
  
@@ -16,6 +19,7 @@
 	    <main>
 	    	<div class="container">
 	    	
+	    	    <!-- SPRING_SECURITY_CONTEXT는 스프링 시큐리티로 로그인을 하면 생성되는 세션 :  로그인 여부를 확인하기위해 사용 -->
 		    	<div class="grid_box">
 		    		<div class="login_box">
 	    				 <c:if test="${empty SPRING_SECURITY_CONTEXT }">
@@ -107,7 +111,7 @@
     <!-- 푸터 -->
  
     <script type="text/javascript">
- 
+
         $(".updating").click(function () {
             swal("업데이트 준비 중 입니다");
         })
@@ -116,10 +120,11 @@
             location.href = "/logout";
         })
         
+        /* 포인트나 리뷰 작성시 로그인 체크여부 */
         function loginCheck(){
-        	const nickname = $(".nickname").data("nickname");
+        	const nickname = $(".nickname").data("nickname"); // 닉네임 값 가져옴
         	if(!nickname) {
-        		swal("로그인 후 이용 가능합니다");
+        		swal("로그인 후 이용 가능합니다"); // swal : 알림창
 	        	return false;
         	}
         	return true;

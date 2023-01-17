@@ -1,9 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    
+<!-- link.jsp file을 현재 파일에 import  -->
 <%@ include file="/WEB-INF/view/include/link.jsp" %>
  
+<!-- css file 적용 -->
 <link rel="stylesheet" href="/css/user/login.css">
-</head>
 <body>
     <main>
         <div class="login_box">
