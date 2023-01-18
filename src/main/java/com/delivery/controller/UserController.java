@@ -26,7 +26,10 @@ public class UserController {
 	 */
 	@PostMapping("/join")
 	public String joinProc(Join join) {
-		System.out.println("Join:" + join);
+		
+		/* 회원가입 Form 에서 입력한 데이터 출력 */
+		System.out.println("Username=" + join.getUsername() + ", " + "Password=" + join.getPassword() + ", " +
+	                        "Email=" + join.getEmail() + ", " + "Nickname=" + join.getNickname() + ", " +  "Phone=" + join.getPhone());
 		return "redirect:/login";
 	}
 
