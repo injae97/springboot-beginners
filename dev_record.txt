@@ -16,7 +16,6 @@
         - Spring Boot Version : 2.7.7
         - Available : Spring Boot DevTools, Lombok, Spring Web > Finish
 
-
 💡 jsp 사용을 위해 pom.xml 수정
 	<!-- JSP 템플릿 엔진 -->
 	<dependency>
@@ -30,10 +29,8 @@
 		<artifactId>jstl</artifactId>
 	</dependency>
 
-
 💡 jsp file 경로 
     - webapp > WEB-INF -> view -> *.jsp 
-	
 	
 💡 MainController 생성 
     - /src/main/java/com/delivery/controller/MainController.java
@@ -47,7 +44,6 @@
 			}
 		}
 
-
 💡 jsp 사용을 위한 application.properties 설정
     - /src/main/resources/application.properties
 	
@@ -55,5 +51,5 @@
 		spring.mvc.view.prefix=/WEB-INF/view/
 		spring.mvc.view.suffix=.jsp
 		
-		
 💡 나머지들은 코드 까보면서 보기 (주석 되어 있음)
+    - Controller, DAO, DTO, Mybatis, Service, application.properties, js etc...
