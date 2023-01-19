@@ -1,0 +1,59 @@
+💡 Spring Tool Suite Project Create
+    - File -> New -> Spring Starter Project
+    - Service URL : https://start.spring.io
+	- Name : dev-delivery 
+	- Type : Maven 
+	- Packaging : War
+	- Java Version : 8
+	- Language : Java
+	- Group : com.delivery
+	- Artifact : delivery
+	- Version : 0.0.1-SNAPSHOT
+	- Description : dev-delivery-repo
+	- Package : com.delivery
+	
+    - Dependencies
+        - Spring Boot Version : 2.7.7
+        - Available : Spring Boot DevTools, Lombok, Spring Web > Finish
+
+
+💡 jsp 사용을 위해 pom.xml 수정
+	<!-- JSP 템플릿 엔진 -->
+	<dependency>
+		<groupId>org.apache.tomcat.embed</groupId>
+		<artifactId>tomcat-embed-jasper</artifactId>
+	</dependency>
+
+	<!-- JSTL -->
+	<dependency>
+		<groupId>javax.servlet</groupId>
+		<artifactId>jstl</artifactId>
+	</dependency>
+
+
+💡 jsp file 경로 
+    - webapp > WEB-INF -> view -> *.jsp 
+	
+	
+💡 MainController 생성 
+    - /src/main/java/com/delivery/controller/MainController.java
+
+		@Controller
+		public class MainController {
+		 
+			@GetMapping("/")
+			public String main(){
+				return "home";
+			}
+		}
+
+
+💡 jsp 사용을 위한 application.properties 설정
+    - /src/main/resources/application.properties
+	
+	    # import jsp files to simple path
+		spring.mvc.view.prefix=/WEB-INF/view/
+		spring.mvc.view.suffix=.jsp
+		
+		
+💡 나머지들은 코드 까보면서 보기 (주석 되어 있음)
