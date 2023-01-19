@@ -6,27 +6,26 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.delivery.dto.Join;
+import com.delivery.service.UserService;
 
 @Controller
 public class UserController {
     
 	/* @GetMapping("test")일 경우 "test" 접근 시 해당 return 값의 jsp 화면 띄워줌 */
-		
-	/*
-	 * 회원가입
-	 */
-	@GetMapping("/join")
-	public String join() {
-		return "user/join";
-	}
+	
+	/* userService를 주입 */
+	@Autowired
+    private UserService userService;	
 	
 	/*
 	 * 회원가입 할 경우 데이터를 받을 코드를 작성
@@ -41,24 +40,42 @@ public class UserController {
 	                        "Email=" + join.getEmail() + ", " + "Nickname=" + join.getNickname() + ", " +  "Phone=" + join.getPhone()); */
 		
 		if (bindingResult.hasErrors()) {
-			System.out.println("에러 발생");
-		
 			List<FieldError> list = bindingResult.getFieldErrors(); // 에러정보를 확인
 			Map<String, String> errorMsg = new HashMap<>();
 			
 			for(int i=0; i<list.size(); i++) {
 				String field = list.get(i).getField();
 				String message = list.get(i).getDefaultMessage();
-				
-				System.out.println("필드 = " + field);
-				System.out.println("메세지 = " + message);
-				
 				errorMsg.put(field, message); // 에러난 필드와 메세지를 Map에 담음
 			}
 			model.addAttribute("errorMsg" , errorMsg); // model 속성에 errorMsg 변수명으로 errorMsg 값을 넣어줌
 			return "user/join";
-		}			
+		}		
+		userService.join(join);
 		return "redirect:/login";
+	}
+	
+	/* join.js 에 있는 ajax로 호출 */
+	@ResponseBody
+	@GetMapping("/overlapCheck")
+	public int overlapCheck(String value, String valueType) {
+		// value = 중복체크할 값, valueType = username, nickname
+		
+		System.out.println(value);
+		System.out.println(valueType);
+		
+		int count = userService.overlapCheck(value, valueType);
+		
+		System.out.println(count);
+		return count;
+	}
+	
+	/*
+	 * 회원가입
+	 */
+	@GetMapping("/join")
+	public String join() {
+		return "user/join";
 	}
 
 	/*
