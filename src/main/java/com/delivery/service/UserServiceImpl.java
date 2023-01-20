@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import com.delivery.dao.UserDAO;
 import com.delivery.dto.Join;
 
-/* UserService interface에 선언 한 메소드(join, overlapCheck) implements */
 @Service
 public class UserServiceImpl implements UserService {
    
