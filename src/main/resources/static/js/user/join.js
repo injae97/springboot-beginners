@@ -50,7 +50,8 @@ const isSubmit = (function(){
 	}
 })();
  
- 
+
+/* 중복 체크 */
 function overlapCheck(data) {
 	let isUseable = false;
 	$.ajax({

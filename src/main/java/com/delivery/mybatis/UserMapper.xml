@@ -5,9 +5,10 @@
   
 <!-- namespace + 쿼리의 id로 호출 -->
 <mapper namespace="user">
- 
+
+    <!-- 중복 체크 - 회원가입시 입력한 데이터 --> 
 	<select id="overlapCheck" resultType="int">
-		SELECT COUNT(*) FROM DV_USER WHERE ${valueType } = #{value }
+		SELECT COUNT(*) FROM DV_USER WHERE ${valueType} = #{value}
 	</select>
 	
 	<!-- 회원가입시 입력한 데이터들 SQL에 입력 -->
@@ -19,11 +20,11 @@
 			NICKNAME,
 			PHONE
 		) VALUES (
-			#{username },
-			#{password },
-			#{email },
-			#{nickname },
-			#{phone }
+			#{username},
+			#{password},
+			#{email},
+			#{nickname},
+			#{phone}
 		)
 	</insert>
 </mapper>

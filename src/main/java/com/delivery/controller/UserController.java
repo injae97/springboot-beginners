@@ -43,12 +43,12 @@ public class UserController {
 			List<FieldError> list = bindingResult.getFieldErrors(); // 에러정보를 확인
 			Map<String, String> errorMsg = new HashMap<>();
 			
-			for(int i=0; i<list.size(); i++) {
+			for(int i = 0; i < list.size(); i++) {
 				String field = list.get(i).getField();
 				String message = list.get(i).getDefaultMessage();
 				errorMsg.put(field, message); // 에러난 필드와 메세지를 Map에 담음
 			}
-			model.addAttribute("errorMsg" , errorMsg); // model 속성에 errorMsg 변수명으로 errorMsg 값을 넣어줌
+			model.addAttribute("errorMsg" , errorMsg); // model에 errorMsg 변수명으로 errorMsg 값을 넣어줌
 			return "user/join";
 		}		
 		userService.join(join);
@@ -59,7 +59,7 @@ public class UserController {
 	@ResponseBody
 	@GetMapping("/overlapCheck")
 	public int overlapCheck(String value, String valueType) {
-		// value = 중복체크할 값, valueType = username, nickname
+		// value = 중복체크할 값(입력한 값들), valueType = username, nickname
 		
 		System.out.println(value);
 		System.out.println(valueType);
