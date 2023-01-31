@@ -32,6 +32,7 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
     - Ctrl + Shift + M 
 	
 ## 💡 Dev-Delivery Guide
+```java
     a. MainController Class Create
 	    - com.delivery(package)안에 com.delivery.controller 생성
 		    - com.delivery.controller에 MainController Class 생성 (MainController.java)
@@ -55,7 +56,8 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
 						
 	d. JSP FILE CREATE 
         - /dev-delivery/src/main/webapp/WEB-INF/view/home.jsp 
-		
+```
+
 ## 💡 HOW TO SOLVE SOURCE CODE NON-RECOGNITION ON JSP FILE?
     - Help > Eclipse Marketplace > eclipse web search 
 	    > eclipse enterprise java and web developer tools 3.24 Download > Restart
