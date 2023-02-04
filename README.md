@@ -171,7 +171,7 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
 ## 💡 How to set utf-8 in STS?
     - Project 클릭 > Alt + Enter > Resource > Text file encoding(Other: UTF-8) > Apply and close 
     
-## 💡 [Insert] - 등록 
+## 💡 [INSERT] - 등록 
     * ★ DB 흐름 ★
          - Controller> Service > DAO > Mapper > DB
             - Controller(대문) > Service(Service에서 DAO 값을 가져옴) > DAO(DAO 내용이 Mybatis 통해 Mapper) 
@@ -246,14 +246,6 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
         
     d. Dao
         - /src/main/java/com/boot/sailing/dao/MenuDao.java
-        
-            package com.boot.sailing.dao;
-
-            import java.util.List;
-            import java.util.Map;
-
-            import org.apache.ibatis.annotations.Mapper;
-            import org.apache.ibatis.annotations.Param;
 
             @Mapper
             public interface MenuDao {
@@ -273,5 +265,81 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
             <!-- id는 Dao의 메소드 이름: doInsert -->
             <insert id="doInsert">
                 INSERT INTO coffee_menu (coffee, kind, price)
-                VALUES(#{strCoffee}, #{strKind}, #{strPrice})
+                VALUES(#{strCoffee}, #{strKind}, CAST(#{strPrice} as INTEGER))
             </insert>
+            
+## 💡 [DELETE] - 삭제
+    * ★ DB 흐름 ★
+         - Controller> Service > DAO > Mapper > DB
+            - Controller(대문) > Service(Service에서 DAO 값을 가져옴) > DAO(DAO 내용이 Mybatis 통해 Mapper) 
+                * Controller 대문 역할을 하려면 @Autowired로 Service 값을 가져와야 한다.
+
+    a. html 
+        a. /src/main/resources/templates/menu/menu.html
+            - 삭제 버튼 클릭 시 href에 /menu_del?no=1 받게 설정
+                <!--MenuCon에 list에 넣은 값을 호출 -->
+                <!-- Thymeleaf - for loop -->      
+                <tr th:each="prod : ${list}">
+                  <td>Chk</td>
+                  <td th:text="${prod.get('no')}">커피No</th>
+                  <td th:text="${prod.get('coffee')}">메뉴명</td>
+                  <td th:text="${prod.get('kind')}">종류</td>
+                  <td th:text="${prod.get('price')}">가격</td>
+                  <td th:text="${prod.get('reg_day')}">등록일</td>
+                  <td th:text="${prod.get('mod_day')}">수정일</td>
+                  <td>수정</td>
+                  <td><a th:href="@{/menu_del(no=${prod.get('no')})}">삭제</a></td>
+                </tr>
+
+    b. Controller
+        - /src/main/java/com/boot/sailing/controller/MenuCon.java
+        
+            /* [DELETE] - 메뉴 삭제 */
+            @GetMapping("/menu_del")
+            public String doDelete(@RequestParam("no") String strNo) {
+                log.info("==========================================================");
+                log.info("strNo:" + strNo);
+                
+                int intI = menuSvc.doDelete(strNo);
+
+                return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
+            }            
+            
+        * 이제 Controller > Service로 접근해야 하니 여기서는 menuSvc.doInsert()로 설정한다.
+            
+    c. Serivce
+        - /src/main/java/com/boot/sailing/service/MenuSvc.java
+        
+            /* [DELETE] - 메뉴 삭제 */
+            public int doDelete(String strNo) {
+                int intI = menuDao.doDelete(strNo);
+                return intI;
+            }    
+        
+        * 이제 Service > Dao로 접근해야 하니 여기서는 menuDao.doInsert()로 설정한다.
+        
+    d. Dao
+        - /src/main/java/com/boot/sailing/dao/MenuDao.java
+        
+            @Mapper
+            public interface MenuDao {
+
+                List<Map<String, Object>> doList();
+                
+                /* [INSERT] - 메뉴 등록 */
+                int doInsert(@Param("strCoffee") String coffee, @Param("strKind")  String kind, @Param("strPrice")  String price);
+
+                /* [DELETE] - 메뉴 삭제 */
+                int doDelete(String strNo);
+            }
+        
+        * 이제 Dao > Mapper로 접근하면 된다
+    
+    e. Mapper
+        - /src/main/resources/sqlmapper/CoffeeMenu.xml
+        
+            <!-- [DELETE] - 메뉴 삭제  -->
+            <!-- id는 Dao의 메소드 이름: doDelete -->
+            <delete id="doDelete">
+                DELETE FROM coffee_menu where no = CAST(#{strNo} as INTEGER)
+            </delete>
