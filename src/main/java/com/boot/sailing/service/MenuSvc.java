@@ -74,5 +74,11 @@ public class MenuSvc {
 	public int doInsert(String strCoffee, String strKind, String strPrice) {
 		int intI = menuDao.doInsert(strCoffee, strKind, strPrice);
 		return intI;
+	}
+
+	/* [DELETE] - 메뉴 삭제 */
+	public int doDelete(String strNo) {
+		int intI = menuDao.doDelete(strNo);
+		return intI;
 	}	
 }

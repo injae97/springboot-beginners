@@ -21,7 +21,14 @@
 	<!-- id는 Dao의 메소드 이름: doInsert -->
     <insert id="doInsert">
         INSERT INTO coffee_menu (coffee, kind, price)
-        VALUES(#{strCoffee}, #{strKind}, #{strPrice})
+        VALUES(#{strCoffee}, #{strKind}, CAST(#{strPrice} as INTEGER))
     </insert>
+	
+	
+  	<!-- [DELETE] - 메뉴 삭제  -->
+	<!-- id는 Dao의 메소드 이름: doDelete -->
+    <delete id="doDelete">
+        DELETE FROM coffee_menu where no = CAST(#{strNo} as INTEGER)
+    </delete>
 	
 </mapper>

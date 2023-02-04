@@ -57,4 +57,14 @@ public class MenuCon {
 		return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
 	}
 	
+	/* [DELETE] - 메뉴 삭제 */
+	@GetMapping("/menu_del")
+	public String doDelete(@RequestParam("no") String strNo) {
+        log.info("==========================================================");
+        log.info("strNo:" + strNo);
+        
+		int intI = menuSvc.doDelete(strNo);
+
+		return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
+	}
 }
