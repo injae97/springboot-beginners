@@ -80,5 +80,18 @@ public class MenuSvc {
 	public int doDelete(String strNo) {
 		int intI = menuDao.doDelete(strNo);
 		return intI;
+	}
+	
+	/* [SELECT] - 수정 클릭 시 해당 데이터 값 호출(doListOne), UPDATE를 위한 용도 */
+	public Map<String, Object> doListOne(String strNo) {
+		Map<String, Object> map = menuDao.doListOne(strNo);
+
+		return map;
+	}
+
+	/* [UPDATE] - 메뉴 수정 */
+	public int doUpdate(String strNo, String strCoffee, String strKind, String strPrice) {
+		int intI = menuDao.doUpdate(strNo, strCoffee, strKind, strPrice);
+		return intI;
 	}	
 }

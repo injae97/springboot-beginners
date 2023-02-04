@@ -65,6 +65,31 @@ public class MenuCon {
         
 		int intI = menuSvc.doDelete(strNo);
 
+		return "redirect:/menu"; 
+	}
+	
+	
+	/* [SELECT] - 수정 클릭 시 해당 데이터 값 호출(doListOne), UPDATE를 위한 용도 */
+	@GetMapping("/menu_up")
+	public String doUpdate(Model model, @RequestParam("no") String strNo) {
+
+		Map<String, Object> map = menuSvc.doListOne(strNo);
+		
+		model.addAttribute("map", map);
+
+		return "/menu/menu_up"; 
+	}
+	
+	/* [UPDATE] - 메뉴 수정 */
+	@PostMapping("/menu_up")
+	public String doUpdatePost(
+			@RequestParam("no") String strNo, 
+			@RequestParam("coffee") String strCoffee, 
+			@RequestParam("kind") String strKind, 
+			@RequestParam("price") String strPrice )	
+	{
+		int intI = menuSvc.doUpdate(strNo, strCoffee, strKind, strPrice);
 		return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
 	}
+	
 }

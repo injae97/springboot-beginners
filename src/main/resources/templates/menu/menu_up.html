@@ -15,8 +15,9 @@
 	<div id="main" style="font-size:large; text-align: center; ">
 	  <div id="search" style="height: 300px;padding: 15px; font-size: small; width: 90%; margin-left: auto;  margin-right: auto;">
 	    <h3>[ Coffee menu 수정 <span style="font-size:30px;">&#9749;</span> ] <th:block th:text="${hello}"></th:block>  </h3>
-	
-	    <form name="fm_menu_ins" autocomplete="on" action="/menu_ins" method="post">
+		
+	    <!-- map으로 사용했기 때문에 map.get('변수명')으로 값을 가져옴  -->
+	    <form name="fm_menu_ins" autocomplete="on" action="/menu_up" method="post">
 	      <fieldset>
 	
 	        <legend> [커피 메뉴 등록] </legend>
@@ -29,9 +30,9 @@
 	                          </p>
 	        &nbsp;&nbsp;
 	        <label>가 격 </label><input type="number" name="price" th:value="${map.get('price')}"></p>
-	        <input type="hidden" name="coffee_id" th:value="${map.get('no')}">
+	        <input type="hidden" name="no" th:value="${map.get('no')}">
 	
-	        <input type="submit" value="메뉴 등록" style="width: 100px;height: 30px;font-weight: bold; font-size: medium">
+	        <input type="submit" value="메뉴 수정" style="width: 100px;height: 30px;font-weight: bold; font-size: medium">
 	      </fieldset>
 	    </form>
 	  </div>

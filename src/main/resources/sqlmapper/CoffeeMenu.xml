@@ -17,6 +17,7 @@
 		    FROM coffee_menu;
 	</select>
 	
+	
   	<!-- [INSERT] - 메뉴 등록  -->
 	<!-- id는 Dao의 메소드 이름: doInsert -->
     <insert id="doInsert">
@@ -30,5 +31,29 @@
     <delete id="doDelete">
         DELETE FROM coffee_menu where no = CAST(#{strNo} as INTEGER)
     </delete>
+    
+    
+   	<!-- [SELECT] - 수정 클릭 시 해당 데이터 값 호출(doListOne), UPDATE를 위한 용도 -->
+	<!-- resultType는 Dao의 type: map -->
+	<!-- Map<String, Object> doListOne(String strNo); 에서 type은 map -->
+	<select id="doListOne" resultType="map">
+		SELECT no, coffee, kind, price,
+		    DATE_FORMAT(reg_day, '%Y-%m-%d') AS reg_day,
+		    DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
+		    FROM coffee_menu
+		    where no = CAST(#{strNo} as INTEGER)
+	</select>
 	
+	
+	<!-- [UPDATE] - 메뉴 수정  --> 
+    <update id="doUpdate">
+       Update coffee_menu
+       Set
+           coffee = #{strCoffee},
+           kind = #{strKind},
+           price = CAST(#{strPrice} as INTEGER)
+       Where no = CAST(#{strNo} as INTEGER)
+   </update>
+   
+   
 </mapper>
