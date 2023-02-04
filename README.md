@@ -245,7 +245,7 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
         * 이제 Service > Dao로 접근해야 하니 여기서는 menuDao.doInsert()로 설정한다.
         
     d. Dao
-        - /src/main/java/com/boot/sailing/dao/MenuDao.java    
+        - /src/main/java/com/boot/sailing/dao/MenuDao.java
         
             package com.boot.sailing.dao;
 
