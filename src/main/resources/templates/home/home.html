@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>Coffee _ Home</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" type="text/css" href="/css/comm.css">
+
+  <!-- 헤더 위치 -->
+  <th:block th:replace="/comm/header" :: headerFragment"></th:block>"
+</head>
+
+<body>
+	<div id="main" style="font-size:large; alignment: center; padding: 10px 50px ">
+	  <table>
+	    <tr>
+	      <td style="width:450px">
+	      <p>Springboot-beginners 시작 <p>
+	      <p>
+	        <hr>
+	      <ul style="list-style-type:square;">
+	        <li>Framework: Spring boot</li>
+	        <li>View: Thymeleaf</li>
+	        <li>DBMS: MariaDB</li>
+	        <li>Mapper: MyBatis</li>
+	        <li>IDE: Spring Tool Suite</li>
+	      </ul>
+	      </p>
+	      </td>
+	      <td style="width:auto">
+	        <img src="/img/Ship.PNG" style="width: 700px">
+	      </td>
+	    </tr>
+	  </table>
+	</div>
+
+<!-- 푸터 위치 -->
+<th:block th:replace="/comm/footer" :: footerFragment"></th:block>"
+</body>
+</html>

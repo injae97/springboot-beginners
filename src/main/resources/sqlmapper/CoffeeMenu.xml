@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<!-- namespace = Dao 위치 -->  
+<mapper namespace="com.boot.sailing.dao.MenuDao">
+
+	<!-- 메뉴 조회 -->
+	<!-- id는 Dao의 메소드 이름: doList -->
+	<!-- resultType는 Dao의 type: map -->
+	<!-- List<Map<String, Object>> doList(); 에서 type은 map -->
+	<select id="doList" resultType="map">
+		SELECT no, coffee, kind, price,
+		    DATE_FORMAT(reg_day, '%Y-%m-%d') AS reg_day,
+		    DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
+		    FROM coffee_menu;
+	</select>
+  
+</mapper>
