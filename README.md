@@ -145,24 +145,24 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
     
     b. logback-spring.xml 생성
         - /src/main/resources/logback-spring.xml    
-			<?xml version="1.0" encoding="UTF-8"?>
-			<configuration>
-				<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-					<encoder>
-						<Pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative] [%thread] %-5level %logger{36} - %msg%n</Pattern>
-					</encoder>
-				</appender>
+            <?xml version="1.0" encoding="UTF-8"?>
+            <configuration>
+                <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+                    <encoder>
+                        <Pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative] [%thread] %-5level %logger{36} - %msg%n</Pattern>
+                    </encoder>
+                </appender>
 
-				<!-- Logback 은 5단계의 로그 레벨을 가진다.
-					심각도 수준은 off > Error > Warn > Info > Debug > Trace 이다.
-				-->
-				
-				<!-- name은 package 이름 -->
-				<logger name="com.boot.sailing" level="Info"/>
-				<root level="Debug">
-					<appender-ref ref="console"/>
-				</root>
-			</configuration>
+                <!-- Logback 은 5단계의 로그 레벨을 가진다.
+                    심각도 수준은 off > Error > Warn > Info > Debug > Trace 이다.
+                -->
+                
+                <!-- name은 package 이름 -->
+                <logger name="com.boot.sailing" level="DEBUG"/>
+                <root level="INFO">
+                    <appender-ref ref="console"/>
+                </root>
+            </configuration>
     
     c. Project and External Dependencies 
         - 프로젝트 내에 Project and External Dependencies > lombok-1.18.24jar > Run As > Java Application > Proceed > Install / Update > Finish > Restart
@@ -171,178 +171,81 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
 ## 💡 How to set utf-8 in STS?
     - Project 클릭 > Alt + Enter > Resource > Text file encoding(Other: UTF-8) > Apply and close 
     
-## 💡 화면 연결 흐름(View - html)    
-    - 클라이언트(Chrome) > request > Controller(안내소) > View(.html) > response > 클라이언트(Chrome)
-    
-    a. Controller 설정 
-        - Sailing/src/main/java/com/boot/sailing/controller/HomeCon.java
-  
-            @Controller
-            public class HomeCon {
+## 💡 [Insert] - 등록 
+    * ★ DB 흐름 ★
+         - Controller> Service > DAO > Mapper > DB
+            - Controller(대문) > Service(Service에서 DAO 값을 가져옴) > DAO(DAO 내용이 Mybatis 통해 Mapper) 
+                * Controller 대문 역할을 하려면 @Autowired로 Service 값을 가져와야 한다.
 
-                // URL에서 localhost/home로 들어오면
-                @GetMapping("/home")
-                public String doHome() {
-                    return "/home/home"; // template > home > home.html 화면을 보여줌
-                }
-            }
+    a. html 
+        a. /src/main/resources/templates/menu/menu.html
+            - 등록하기 버튼 클릭 시 href에 화면단 경로로 수정
+                <!-- 메뉴 등록, href에 화면단 경로 지정(/templates/menu/menu_ins.html) -->
+                &nbsp;&nbsp;<button style="width: 80px;height: 30px;font-weight: bold; font-size: medium"><a href="/menu_ins">등록</a></button>
+            
+        b. /src/main/resources/templates/menu/menu_ins.html
+            - 등록하기 입력 form 
+                <!-- Post 방식으로 받으며 action에 Controller Mapping 값으로 설정(/src/main/java/com/boot/sailing/controller/MenuCon.java) -->
+                <!-- name들은 데이터베이스에서 지정한 컬럼 값 그대로 사용해야 함 -->
+                <form name="fm_menu_ins" autocomplete="on" action="/menu_ins" method="post">
+                  <fieldset>
+            
+                    <legend> [커피 메뉴 등록] </legend>
+                    <label>메뉴명</label> <input type="text" id="coffee" name="coffee"></p>
+                    <label>종 류 </label><select name="kind">
+                                        <option value="커피">커피</option>
+                                        <option value="논커피">논커피</option>
+                                        <option value="에이드">에이드</option>
+                                      </select>
+                                      </p>
+                    &nbsp;&nbsp;
+                    <label>가 격 </label><input type="number" name="price"></p>
+            
+                    <input type="submit" value="메뉴 등록" style="width: 100px;height: 30px;font-weight: bold; font-size: medium">
+                  </fieldset>
+                </form>
         
-    b. html 설정
-        - /Sailing/src/main/resources/templates/home/home.html
-            - <a href="/home/home.html">Home</a> 👉 <a href="/home">Home</a> 변경
-                    
-## 💡 데이터 연결 흐름(Backend 👉 View(Thymeleaf)에 데이터 주기)    
-    - 클라이언트(Chrome) > request > Controller(안내소) > Data, Model > View(Thymeleaf) > 
-        response > 클라이언트(Chrome)
-
-    a. MenuCon.java
-        @GetMapping("/menu")
-            public String doHome(Model model) {
-
-            // Data Create - List, Map
-            List<Map<String, Object>> list = new ArrayList<>();
-            Map<String, Object> map = new HashMap<>();
-
-            map.put("no", "1");
-            map.put("coffee", "아이스아메리카노");
-            map.put("kind", "커피");
-            map.put("price", "5,000");
-            map.put("reg_day", "2020.10.29");
-            map.put("mod_day", "2021.10.29");
-            list.add(map);
-
-            // Data 전송 - Model
-            model.addAttribute("list", list);
-            model.addAttribute("hello", "========== MenuCon ==========");
-
-            return "/menu/menu"; 
-        }    
-    
-    b. Thymeleaf - Menu.html
-        * <html lang="ko"  xmlns:th="http://www.thymeleaf.org">
-            
-        a. variable import 
-            - <h3>[ Coffee menu Management <span style="font-size:30px;">&#9749;</span> ] <th:block th:text="${hello}"></th:block>  </h3>
-
-        b. for loop
-            <!--MenuCon에 list에 넣은 값을 호출 -->
-            <!-- Thymeleaf - for loop -->      
-            <tr th:each="prod : ${list}">
-                <td>Chk</td>
-                <td th:text="${prod.get('no')}">커피No</th>
-                <td th:text="${prod.get('coffee')}">메뉴명</td>
-                <td th:text="${prod.get('kind')}">종류</td>
-                <td th:text="${prod.get('price')}">가격</td>
-                <td th:text="${prod.get('reg_day')}">등록일</td>
-                <td th:text="${prod.get('mod_day')}">수정일</td>
-                <td>수정</td>
-                <td>삭제</td>
-            </tr>
-            
-## 💡 데이터 연결 흐름 - DI/Ioc(Controller > Service)    
-    - 클라이언트(Chrome) > request > Controller(안내소) > Service(로그인 처리, 실제 업무처리) > Controller(안내소)
-    
-    a. Controller
+    b. Controller
         - /src/main/java/com/boot/sailing/controller/MenuCon.java
         
-            @Autowired
-            MenuSvc menuSvc;
-            
-            @GetMapping("/menu")
-            public String doMenu(Model model) {
-
-                // List<Map<String, Object>> list = new MenuSvc().doList(); // MenuSvc.java에서 새로운 객체를 생성하여 doList 메소드 호출 
-                List<Map<String, Object>> list = menuSvc.doList(); // MenuSvc에 @Service로 Bean을 등록한 것을 주입(Injection)을 통해 사용
-
-                model.addAttribute("list", list);
-                model.addAttribute("hello", "========== MenuCon ==========");
-
-                return "/menu/menu"; 
-            }  
-            
-    * Controller에서 만들었던 업무 로직을 Service로 뺌
-    
-    b. Service
-        - /src/main/java/com/boot/sailing/service/MenuSvc.java
-        
-            package com.boot.sailing.service;
-
-            import java.util.ArrayList;
-            import java.util.HashMap;
-            import java.util.List;
-            import java.util.Map;
-
-            import org.springframework.stereotype.Service;
-
-            import lombok.extern.log4j.Log4j2;
-
-            @Service 
-            @Log4j2
-            public class MenuSvc {
-                
-                public MenuSvc() {
-                    log.info("================ MenuSvc , 생성자 ===================");
-                }
-                
-                // Data Create - List, Map
-                public List<Map<String, Object>> doList() {
-                    List<Map<String, Object>> list = new ArrayList<>();
-                    Map<String, Object> map = new HashMap<>();
-
-                    map.put("no", "1");
-                    map.put("coffee", "아이스아메");
-                    map.put("kind", "커피");
-                    map.put("price", "5,000");
-                    map.put("reg_day", "2020.10.29");
-                    map.put("mod_day", "2021.10.29");
-                    list.add(map);
-
-                    Map<String, Object> map2 = new HashMap<>();
-
-                    map2.put("no", "2");
-                    map2.put("coffee", "카푸치노");
-                    map2.put("kind", "커피");
-                    map2.put("price", "6,000");
-                    map2.put("reg_day", "2020.10.29");
-                    map2.put("mod_day", "2021.10.29");
-                    list.add(map2);
-                    
-                    Map<String, Object> map3 = new HashMap<>();
-
-                    map3.put("no", "3");
-                    map3.put("coffee", "카푸치노");
-                    map3.put("kind", "커피");
-                    map3.put("price", "6,000");
-                    map3.put("reg_day", "2020.10.29");
-                    map3.put("mod_day", "2021.10.29");
-                    list.add(map3);
-                    
-                    log.info(list);
-
-                    return list;
-                }
+            /*
+             * [INSERT] - 메뉴 등록 1 
+             * 화면 이동이기 때문에 @GetMapping 사용
+             * localhost:8080/menu_ins로 들어오면 /menu/menu_ins.html 화면을 보여줌
+             */
+            @GetMapping("/menu_ins")
+            public String doInsert() {
+                return "/menu/menu_ins";
             }
             
-                            
-## 💡 데이터베이스 DB 연동(Controller > Service > Dao > DBMS(MariaDB))
-    - 클라이언트(Chrome) > request > Controller(안내소) > Service(로그인 처리, 실제 업무처리) >  Dao(Data 처리) > DBMS(MyBatis - MariaDB)
-    
-    a. Service
+            /* [INSERT] - 메뉴 등록 2 */
+            @PostMapping("/menu_ins")
+            public String doInsertPost(
+                    @RequestParam("coffee") String strCoffee, 
+                    @RequestParam("kind") String strKind, 
+                    @RequestParam("price") String strPrice )    
+            {
+                log.info("==========================================================");
+                log.info(strCoffee);
+                int intI = menuSvc.doInsert(strCoffee, strKind, strPrice);
+                return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
+            }
+            
+        * 이제 Controller > Service로 접근해야 하니 여기서는 menuSvc.doInsert()로 설정한다.
+            
+    c. Serivce
         - /src/main/java/com/boot/sailing/service/MenuSvc.java
         
-            @Autowired
-            MenuDao menuDao;
-            
-            public List<Map<String, Object>> doList() {
-
-                List<Map<String, Object>> list = menuDao.doList();
-                
-                log.info(list);
-                return list;    
-            }
-    
-    b. Dao    
-        - /src/main/java/com/boot/sailing/dao/MenuDao.java
+            /* [INSERT] - 메뉴 등록 */
+            public int doInsert(String strCoffee, String strKind, String strPrice) {
+                int intI = menuDao.doInsert(strCoffee, strKind, strPrice);
+                return intI;
+            }   
+        
+        * 이제 Service > Dao로 접근해야 하니 여기서는 menuDao.doInsert()로 설정한다.
+        
+    d. Dao
+        - /src/main/java/com/boot/sailing/dao/MenuDao.java    
         
             package com.boot.sailing.dao;
 
@@ -350,45 +253,25 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
             import java.util.Map;
 
             import org.apache.ibatis.annotations.Mapper;
+            import org.apache.ibatis.annotations.Param;
 
             @Mapper
             public interface MenuDao {
 
                 List<Map<String, Object>> doList();
+                
+                /* [INSERT] - 메뉴 등록 */
+                int doInsert(@Param("strCoffee") String coffee, @Param("strKind")  String kind, @Param("strPrice")  String price);
             }
+        
+        * 이제 Dao > Mapper로 접근하면 된다
     
-    c. sqlmapper
+    e. Mapper
         - /src/main/resources/sqlmapper/CoffeeMenu.xml
         
-            <?xml version="1.0" encoding="UTF-8" ?>
-            <!DOCTYPE mapper
-              PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-              "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-              
-            <!-- namespace = Dao 위치 -->  
-            <mapper namespace="com.boot.sailing.dao.MenuDao">
-
-                <!-- 메뉴 조회 -->
-                <!-- id는 Dao의 메소드 이름: doList -->
-                <!-- resultType는 Dao의 type: map -->
-                <!-- List<Map<String, Object>> doList(); 에서 type은 map -->
-                <select id="doList" resultType="map">
-                    SELECT no, coffee, kind, price,
-                        DATE_FORMAT(reg_day, '%Y-%m-%d') AS reg_day,
-                        DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
-                        FROM coffee_menu;
-                </select>
-              
-            </mapper>
-            
-    * application.yml
-        - /src/main/resources/application.yml
-        
-            # Configuration mybatis
-            mybatis:
-              mapper-locations: sqlmapper/**/*.xml
-              configuration: 
-                map-underscore-to-camel-case: true
-                
-    * build.gradle
-        - implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.0'
+            <!-- [INSERT] - 메뉴 등록  -->
+            <!-- id는 Dao의 메소드 이름: doInsert -->
+            <insert id="doInsert">
+                INSERT INTO coffee_menu (coffee, kind, price)
+                VALUES(#{strCoffee}, #{strKind}, #{strPrice})
+            </insert>
