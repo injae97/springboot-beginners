@@ -1,0 +1,19 @@
+## 💡 DI/IoC 
+    a. Dependency Injection(DI)
+        - 의존성 주입 > 주입을 받음
+        
+        e.g D
+            - Dependency만 있고 내가 Control 하는 구조
+            - 필요할 때 마다 객체 생성
+                - e.g : Classname name = new Classname();
+                - class A -> Call -> Class B(A는 B에 의존함)
+                * 즉, 호출 될 때 마다 계속 호출 (이후 호출 시에도 전부다 호출함(System.println, 메소드 등)
+
+        e.g DI
+            - Dependency와 Injection 있고 내가 Control 당하는 구조
+            - 스프링이 구동 될 때 이미 객체가 생성되어 필요로 하는 class가 수동적으로 연결을 받음(@Autowired를 통해서)
+                - class A <- injenction <- 자바 객체(@Service, @Controller, @Repository, @Component 사용 시 컨테이너로 들어감)
+                * 즉, 스프링이 올라가는 도중에 호출 된다.(이후 호출 할 땐 기능만 호출(메소드만 호출)
+
+    b. Inversion of Control(IoC)
+        - 제어의 역전 > 제어의 주체가 바뀜

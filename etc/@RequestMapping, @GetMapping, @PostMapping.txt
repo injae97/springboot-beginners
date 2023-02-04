@@ -1,0 +1,20 @@
+## 💡 @RequestMapping, @GetMapping, @PostMapping 차이점
+
+    a. [GET, POST 방식] - @RequestMapping
+        @RequestMapping("/member")
+        public String doHome() {
+            return "/member/member"; 
+        }
+        * 공통으로 접속되는 경로일 때 클래스 위에 선언해서 사용
+
+    b. [GET 방식] - @GetMapping 
+        @GetMapping("/member")
+        public String doHome() {
+            return "/member/member"; 
+        }
+    
+    c. [POST 방식] - @PostMapping
+        @PostMapping("/member")
+        public String doHome() {
+            return "/member/member"; 
+        }

@@ -1,0 +1,99 @@
+## 💡 DB 테이블 생성 및 추가 쿼리(PK, FK, UK) 
+    a. 생성한 계정으로 데이터베이스 접속(HeidiSQL 실행)
+        - 세션 이름: Springboot-boot
+        - 네트워크 유형: MariaDB or MySQL(TCP/IP)
+        - 호스트명 / IP: 127.0.0.1
+        - 사용자: boot
+        - 암호: boot
+        - 포트: 3307
+        * 데이터베이스: boot
+        
+    b. 테이블 생성
+        CREATE TABLE coffee_menu (
+            no INT(11) NOT NULL AUTO_INCREMENT,
+            coffee VARCHAR(100) NOT NULL ,
+            kind VARCHAR(100) NOT NULL ,
+            price INT(11) NOT NULL DEFAULT 0,
+            reg_day DATETIME NOT NULL DEFAULT current_timestamp(),
+            mod_day DATETIME NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+            PRIMARY KEY (no)
+        )
+        COMMENT='커피/음료 메뉴'
+        ;
+
+        CREATE TABLE cust_info (
+            no INT(11) NOT NULL AUTO_INCREMENT,
+            cust_id VARCHAR(100) NOT NULL,
+            name VARCHAR(100) NOT NULL,
+            email VARCHAR(100) NOT NULL,
+            role VARCHAR(100) NOT NULL DEFAULT 'MEMBER' ,
+            reg_day DATETIME NOT NULL DEFAULT current_timestamp(),
+            PRIMARY KEY (no)
+        )
+        COMMENT='고객정보'
+        ;
+
+        CREATE TABLE order_list (
+            no INT(11) NOT NULL AUTO_INCREMENT,
+            coffee_no INT(11) NOT NULL,
+            coffee VARCHAR(100) NOT NULL,
+            price INT(11) NOT NULL,
+            cust_id VARCHAR(100) NOT NULL,
+            name VARCHAR(100) NOT NULL,
+            reg_day DATETIME NOT NULL DEFAULT current_timestamp(),
+            PRIMARY KEY (no)
+        )
+        COMMENT='주문내역'
+        ;
+  
+        * 외래키 설정(FK)
+            - order_list 에서 외래키 > 추가 > 열: coffee_no(해당 컬럼에서 외래키로 지정할 컬럼), 참조 테이블: coffee_menu, 외래열(참조테이블에서 외래키로 지정할 것): no
+            * 조인 할 때 해당 테이블의 기본키(PK) 와 조인 하고자 하는 외래키(FK) 조인
+                - 즉, coffee_menu에서 PK인 no 와 order_list의 FK인 coffe_no를 조인 
+                
+        * 유니크키 설정(UK)
+            - 외래키를 2개이상 하면 어떤 것이 외래키인지 모르기 때문에 유니크키 설정
+                - cust_info 에서 cust_id 오른쪽 마우스 > 새 인덱스 생성 > UNIQUE KEY
+                - 아래 쿼리 실행
+                    ALTER TABLE order_list
+                    ADD CONSTRAINT fk_cust_id
+                    FOREIGN KEY (cust_id)
+                    REFERENCES cust_info(cust_id);
+                    
+                    * 즉, order_list 에서 fk_cust_id 외래키명으로 cust_id 컬럼을 설정한다. 
+                    * cust_info의 테이블의 cust_id 컬럼을
+    
+    c. 데이터 추가
+        INSERT INTO coffee_menu (coffee, kind, price)
+        VALUES
+        ('아메리카노','커피',2000),
+        ('카페라떼','커피',3000),
+        ('카푸치노','커피',3000),
+        ('그린티','논커피',3500),
+        ('초코라떼','논커피',4000),
+        ('파인애플','에이드',3000),
+        ('제주한라봉','에이드',3000),
+        ('오렌지','에이드',3000)
+        ;
+
+        INSERT INTO cust_info(cust_id,NAME,email,role)
+        VALUES
+        ('ID1','홍길동','email1@hong.com','MEMBER'),
+        ('ID2','홍길성','email2@hong.com','MEMBER'),
+        ('ID3','홍길자','email3@hong.com','MEMBER'),
+        ('ID4','홍길순','email4@hong.com','MEMBER'),
+        ('ID5','홍길선','email5@hong.com','MEMBER'),
+        ('ID6','관리자','admin@hong.com','ADMIN')
+        ;
+
+        INSERT INTO order_list (coffee_no,coffee,price,cust_id,NAME)
+        VALUES
+        (1,'아메리카노',2000,'ID1','홍길동'),
+        (1,'아메리카노',2000,'ID2','홍길성'),
+        (3,'카푸치노',3000,'ID3','홍길자'),
+        (3,'카푸치노',3000,'ID3','홍길자'),
+        (5,'초코라떼',4000,'ID4','홍길순'),
+        (8,'오렌지',3000,'ID2','홍길성'),
+        (4,'그린티',3500,'ID3','홍길자'),
+        (2,'카페라떼',3000,'ID5','홍길선')
+        ;

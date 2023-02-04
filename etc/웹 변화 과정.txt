@@ -1,0 +1,24 @@
+## 💡 웹 변화 과정
+    - Web Programming 변화 과정 
+        a. html(정적)
+            - 이미 소스코드 파일 내에 하드코딩으로 해놓은 것
+        
+        b. Servlet
+            - Java언어에 Html를 넣는 방식을 지원
+            * Servlet에 HTML 구현 > java단 내에서 화면 코드, 비지니스 로직 코드를 다 사용함으로써 개발자들 죽어나감
+            * 동적이며 DB 연결(Tomcat)
+            
+        c. Jsp
+            - Html에 Java언어를 넣는 방식을 지원
+            * 시간이 지날 수록 jsp내의 자바 코드가 스파게티코드로 복잡해짐(3000 line)
+            * 코드가 외부로 노출되어 있어서 보안 이슈
+            * 동적이며 DB 연결(Tomcat)
+            
+        d. MVC(Tomcat)
+            - Html 과 Java를 분리(Front, Backend)
+            - Java 내부에서도 받아들이는 입구와 비즈니스 부분을 분리(MVC)
+            * 표준 없이 MVC 개발하는 개발자들 생김
+            * 동적이며 DB 연결(Tomcat)
+            
+        e. Spring Framework 
+            - 처음 프로젝트 했을 때의 흐름만 간단하게 작성
