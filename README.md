@@ -171,7 +171,7 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
 ## 💡 How to set utf-8 in STS?
     - Project 클릭 > Alt + Enter > Resource > Text file encoding(Other: UTF-8) > Apply and close 
     
-## 💡 [INSERT] - 등록 
+## 💡 [INSERT] - 메뉴 등록 
     * ★ DB 흐름 ★
          - Controller> Service > DAO > Mapper > DB
             - Controller(대문) > Service(Service에서 DAO 값을 가져옴) > DAO(DAO 내용이 Mybatis 통해 Mapper) 
@@ -268,7 +268,7 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
                 VALUES(#{strCoffee}, #{strKind}, CAST(#{strPrice} as INTEGER))
             </insert>
             
-## 💡 [DELETE] - 삭제
+## 💡 [DELETE] - 메뉴 삭제
     * ★ DB 흐름 ★
          - Controller> Service > DAO > Mapper > DB
             - Controller(대문) > Service(Service에서 DAO 값을 가져옴) > DAO(DAO 내용이 Mybatis 통해 Mapper) 
@@ -276,7 +276,7 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
 
     a. html 
         a. /src/main/resources/templates/menu/menu.html
-            - 삭제 버튼 클릭 시 href에 /menu_del?no=1 받게 설정
+            - 삭제 클릭 시 href에 /menu_del?no=1 받게 설정
                 <!--MenuCon에 list에 넣은 값을 호출 -->
                 <!-- Thymeleaf - for loop -->      
                 <tr th:each="prod : ${list}">
@@ -326,9 +326,6 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
 
                 List<Map<String, Object>> doList();
                 
-                /* [INSERT] - 메뉴 등록 */
-                int doInsert(@Param("strCoffee") String coffee, @Param("strKind")  String kind, @Param("strPrice")  String price);
-
                 /* [DELETE] - 메뉴 삭제 */
                 int doDelete(String strNo);
             }
@@ -343,3 +340,166 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
             <delete id="doDelete">
                 DELETE FROM coffee_menu where no = CAST(#{strNo} as INTEGER)
             </delete>
+            
+## 💡 [SELECT] - 메뉴 수정 클릭 시 해당 데이터 값 호출(doListOne), UPDATE를 위한 용도
+    * ★ DB 흐름 ★
+         - Controller> Service > DAO > Mapper > DB
+            - Controller(대문) > Service(Service에서 DAO 값을 가져옴) > DAO(DAO 내용이 Mybatis 통해 Mapper) 
+                * Controller 대문 역할을 하려면 @Autowired로 Service 값을 가져와야 한다.
+
+    a. html 
+        a. /src/main/resources/templates/menu/menu.html
+            - 수정 클릭 시 href에 /menu_up?no=1 받게 설정
+                <!--MenuCon에 list에 넣은 값을 호출 -->
+                <!-- Thymeleaf - for loop -->      
+                <tr th:each="prod : ${list}">
+                  <td>Chk</td>
+                  <td th:text="${prod.get('no')}">커피No</th>
+                  <td th:text="${prod.get('coffee')}">메뉴명</td>
+                  <td th:text="${prod.get('kind')}">종류</td>
+                  <td th:text="${prod.get('price')}">가격</td>
+                  <td th:text="${prod.get('reg_day')}">등록일</td>
+                  <td th:text="${prod.get('mod_day')}">수정일</td>
+                  <td><a th:href="@{/menu_up(no=${prod.get('no')})}">수정</a></td>
+                  <td><a th:href="@{/menu_del(no=${prod.get('no')})}">삭제</a></td>
+                </tr>
+
+    b. Controller
+        - /src/main/java/com/boot/sailing/controller/MenuCon.java
+        
+            /* [SELECT] - 수정 클릭 시 해당 데이터 값 호출(doListOne), UPDATE를 위한 용도 */
+            @GetMapping("/menu_up")
+            public String doUpdate(Model model, @RequestParam("no") String strNo) {
+
+                Map<String, Object> map = menuSvc.doListOne(strNo);
+                
+                model.addAttribute("map", map);
+
+                return "/menu/menu_up"; 
+            }         
+            
+        * 이제 Controller > Service로 접근해야 하니 여기서는 menuSvc.doInsert()로 설정한다.
+            
+    c. Serivce
+        - /src/main/java/com/boot/sailing/service/MenuSvc.java
+        
+            /* [SELECT] - 수정 클릭 시 해당 데이터 값 호출(doListOne), UPDATE를 위한 용도 */
+            public Map<String, Object> doListOne(String strNo) {
+                Map<String, Object> map = menuDao.doListOne(strNo);
+
+                return map;
+            }    
+        
+        * 이제 Service > Dao로 접근해야 하니 여기서는 menuDao.doInsert()로 설정한다.
+        
+    d. Dao
+        - /src/main/java/com/boot/sailing/dao/MenuDao.java
+        
+            @Mapper
+            public interface MenuDao {
+
+                /* [SELECT] - 수정 클릭 시 해당 데이터 값 호출(doListOne), UPDATE를 위한 용도 */
+                Map<String, Object> doListOne(String strNo);
+            }
+        
+        * 이제 Dao > Mapper로 접근하면 된다
+    
+    e. Mapper
+        - /src/main/resources/sqlmapper/CoffeeMenu.xml
+        
+            <!-- [SELECT] - 수정 클릭 시 해당 데이터 값 호출(doListOne), UPDATE를 위한 용도 -->
+            <!-- resultType는 Dao의 type: map -->
+            <!-- Map<String, Object> doListOne(String strNo); 에서 type은 map -->
+            <select id="doListOne" resultType="map">
+                SELECT no, coffee, kind, price,
+                    DATE_FORMAT(reg_day, '%Y-%m-%d') AS reg_day,
+                    DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
+                    FROM coffee_menu
+                    where no = CAST(#{strNo} as INTEGER)
+            </select>
+
+
+## 💡 [UPDATE] - 메뉴 수정 
+    * ★ DB 흐름 ★
+         - Controller> Service > DAO > Mapper > DB
+            - Controller(대문) > Service(Service에서 DAO 값을 가져옴) > DAO(DAO 내용이 Mybatis 통해 Mapper) 
+                * Controller 대문 역할을 하려면 @Autowired로 Service 값을 가져와야 한다.
+
+    a. html 
+        a. /src/main/resources/templates/menu/menu_up.html
+            - 수정 > 메뉴 수정 클릭 시 수정 되게끔 하기 위함
+            
+                <!-- map으로 사용했기 때문에 map.get('변수명')으로 값을 가져옴  -->
+                <form name="fm_menu_ins" autocomplete="on" action="/menu_up" method="post">
+                  <fieldset>
+            
+                    <legend> [커피 메뉴 등록] </legend>
+                    <label>메뉴명</label> <input type="text" id="name" name="coffee" th:value="${map.get('coffee')}"></p>
+                    <label>종 류 </label><select name="kind">
+                                        <option value="커피" th:selected="${map.get('kind')} == '커피'">커피</option>
+                                        <option value="논커피" th:selected="${map.get('kind')} == '논커피'">논커피</option>
+                                        <option value="에이드" th:selected="${map.get('kind')} == '에이드'">에이드</option>
+                                      </select>
+                                      </p>
+                    &nbsp;&nbsp;
+                    <label>가 격 </label><input type="number" name="price" th:value="${map.get('price')}"></p>
+                    <input type="hidden" name="coffee_id" th:value="${map.get('no')}">
+            
+                    <input type="submit" value="메뉴 수정" style="width: 100px;height: 30px;font-weight: bold; font-size: medium">
+                  </fieldset>
+                </form>
+                
+                <input type="hidden" name="no" th:value="${map.get('no')}">
+
+    b. Controller
+        - /src/main/java/com/boot/sailing/controller/MenuCon.java
+        
+            /* [UPDATE] - 메뉴 수정 */
+            @PostMapping("/menu_up")
+            public String doUpdatePost(
+                    @RequestParam("no") String strNo, 
+                    @RequestParam("coffee") String strCoffee, 
+                    @RequestParam("kind") String strKind, 
+                    @RequestParam("price") String strPrice )    
+            {
+                int intI = menuSvc.doUpdate(strNo, strCoffee, strKind, strPrice);
+                return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
+            }      
+            
+        * 이제 Controller > Service로 접근해야 하니 여기서는 menuSvc.doInsert()로 설정한다.
+            
+    c. Serivce
+        - /src/main/java/com/boot/sailing/service/MenuSvc.java
+        
+            /* [UPDATE] - 메뉴 수정 */
+            public int doUpdate(String strNo, String strCoffee, String strKind, String strPrice) {
+                int intI = menuDao.doUpdate(strNo, strCoffee, strKind, strPrice);
+                return intI;
+            }    
+        
+        * 이제 Service > Dao로 접근해야 하니 여기서는 menuDao.doInsert()로 설정한다.
+        
+    d. Dao
+        - /src/main/java/com/boot/sailing/dao/MenuDao.java
+        
+            @Mapper
+            public interface MenuDao {
+                
+                /* [UPDATE] - 메뉴 수정 */
+                int doUpdate(@Param("strNo") String no, @Param("strCoffee") String coffee, @Param("strKind") String kind, @Param("strPrice") String price);
+            }
+        
+        * 이제 Dao > Mapper로 접근하면 된다
+    
+    e. Mapper
+        - /src/main/resources/sqlmapper/CoffeeMenu.xml
+        
+            <!-- [UPDATE] - 메뉴 수정  --> 
+            <update id="doUpdate">
+               Update coffee_menu
+               Set
+                   coffee = #{strCoffee},
+                   kind = #{strKind},
+                   price = CAST(#{strPrice} as INTEGER)
+               Where no = CAST(#{strNo} as INTEGER)
+           </update>
