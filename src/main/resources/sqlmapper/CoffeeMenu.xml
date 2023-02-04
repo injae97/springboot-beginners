@@ -6,7 +6,7 @@
 <!-- namespace = Dao 위치 -->  
 <mapper namespace="com.boot.sailing.dao.MenuDao">
 
-	<!-- 메뉴 조회 -->
+	<!-- [SELECT] - 메뉴 조회 -->
 	<!-- id는 Dao의 메소드 이름: doList -->
 	<!-- resultType는 Dao의 type: map -->
 	<!-- List<Map<String, Object>> doList(); 에서 type은 map -->
@@ -16,5 +16,12 @@
 		    DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
 		    FROM coffee_menu;
 	</select>
-  
+	
+  	<!-- [INSERT] - 메뉴 등록  -->
+	<!-- id는 Dao의 메소드 이름: doInsert -->
+    <insert id="doInsert">
+        INSERT INTO coffee_menu (coffee, kind, price)
+        VALUES(#{strCoffee}, #{strKind}, #{strPrice})
+    </insert>
+	
 </mapper>

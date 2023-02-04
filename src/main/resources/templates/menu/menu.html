@@ -23,7 +23,7 @@
 	
 	        <legend> [검색조건] </legend>
 	        <label>등록기간</label><input type="date" id="start_date" name="start_date" min="2020-01-01" max="2023-12-31">
-	        - <input type="date" id="end_date" name="end_date" min="2020-01-01" max="2023-12-31">
+	        <input type="date" id="end_date" name="end_date" min="2020-01-01" max="2023-12-31">
 	        &nbsp;&nbsp;
 	        <label>메뉴명</label> <input type="text" id="name" name="name">
 	        &nbsp;&nbsp;
@@ -35,7 +35,9 @@
 	      </select>
 	
 	        &nbsp;&nbsp;<input type="submit" value="조회" style="width: 80px;height: 30px;font-weight: bold; font-size: medium">
-	        &nbsp;&nbsp;<button style="width: 80px;height: 30px;font-weight: bold; font-size: medium"><a href="~~~">등록</a></button>
+	        
+	        <!-- 메뉴 등록 > Controller에서 @GetMapping 값을 적어줌 -->
+	        &nbsp;&nbsp;<button style="width: 80px;height: 30px;font-weight: bold; font-size: medium"><a href="/menu_ins">등록</a></button>
 	        &nbsp;&nbsp;<button style="width: 80px;height: 30px;font-weight: bold; font-size: medium"><a href="~~~">삭제</a></button>
 	        <!-- <a href="javascript:loadDocArray()">test</a> -->
 	        <!--        <label>CheckBox : </label><span id="idCheckBox"></span>-->

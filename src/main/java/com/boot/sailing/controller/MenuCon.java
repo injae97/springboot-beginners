@@ -7,10 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.boot.sailing.service.MenuSvc;
 
+import lombok.extern.log4j.Log4j2;
+
 @Controller
+@Log4j2
 public class MenuCon {
 	
 	// @Autowired를 통해 주입 받음
@@ -28,4 +33,28 @@ public class MenuCon {
 
 		return "/menu/menu"; 
 	}  
+	
+    /*
+     * [INSERT] - 메뉴 등록 1 
+     * 화면 이동이기 때문에 @GetMapping 사용
+     * localhost:8080/menu_ins로 들어오면 /menu/menu_ins.html 화면을 보여줌
+     */
+	@GetMapping("/menu_ins")
+	public String doInsert() {
+		return "/menu/menu_ins";
+	}
+	
+	/* [INSERT] - 메뉴 등록 2 */
+	@PostMapping("/menu_ins")
+	public String doInsertPost(
+			@RequestParam("coffee") String strCoffee, 
+			@RequestParam("kind") String strKind, 
+			@RequestParam("price") String strPrice )	
+	{
+        log.info("==========================================================");
+        log.info(strCoffee);
+		int intI = menuSvc.doInsert(strCoffee, strKind, strPrice);
+		return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
+	}
+	
 }

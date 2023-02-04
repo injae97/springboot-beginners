@@ -69,7 +69,10 @@ public class MenuSvc {
 
 		return list;
 	}
-	
-	
-	
+
+	/* [INSERT] - 메뉴 등록 */
+	public int doInsert(String strCoffee, String strKind, String strPrice) {
+		int intI = menuDao.doInsert(strCoffee, strKind, strPrice);
+		return intI;
+	}	
 }
