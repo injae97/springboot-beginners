@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Mapper
 public interface MenuDao {
@@ -32,4 +33,10 @@ public interface MenuDao {
 	
 	/* [INSERT] - 수정한 가격 데이터 등록 */
 	int doInsertLog(@Param("strNo") String no, @Param("strPrice") String price);
+
+	/* [UPDATE] - 다중 가격 데이터 수정(원 쿼리 - doUpdatePriceOne) */
+	int doUpdatePriceOne(@Param("chkList") List<String> chkCoffeeNo, @Param("strPrice") String price);
+
+	/* [INSERT] - 수정한 가격 데이터 등록(원 쿼리 - doInsertLogOne) */
+	int doInsertLogOne(@Param("chkList") List<String> chkCoffeeNo, @Param("strPrice") String price);
 }

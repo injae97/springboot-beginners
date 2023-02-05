@@ -114,4 +114,16 @@ public class MenuSvc {
 		int int2 = menuDao.doInsertLog(strNo, strPrice);
 		return int2;
 	}
+	
+	/* [UPDATE] - 다중 가격 데이터 수정(원 쿼리 - doUpdatePriceOne) */
+	public int doUpdatePriceOne(List<String> chkList, String strPrice) {
+		int int1 = menuDao.doUpdatePriceOne(chkList, strPrice); 		
+		return int1;
+	}
+	
+	/* [INSERT] - 수정한 가격 데이터 등록(원 쿼리 - doInsertLogOne) */
+	public int doInsertLogOne(List<String> chkList, String strPrice) {
+		int int2 = menuDao.doInsertLogOne(chkList, strPrice); 	
+		return int2;
+	}
 }

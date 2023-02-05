@@ -120,11 +120,12 @@ public class MenuCon {
 	
 	
 	/*
+	 * ★★★ [문제] - for loop 안에서 사용 했기 때문에 효율적이지 못함 ★★★
 	 * [UPDATE] - 다중 가격 데이터 수정
      * [INSERT] - 수정한 가격 데이터 등록
 	 * menu.html 에서 <td><input type="checkBox" name="chkCoffeeNo" th:value="${prod.get('no')}"></td> 의 name값을 @RequestParam 적음
 	 * menu.html 에서 <input type="hidden" name="hidden_price">의 name값을 @RequestParam 적음
-	 */
+
 	@PostMapping("/menu_updatePrice")
 	public String doUpdatePrice(@RequestParam("chkCoffeeNo") List<String> chkList, @RequestParam("hidden_price") String strPrice) {
 		
@@ -137,6 +138,24 @@ public class MenuCon {
 			}
 		}
 			
+		return "redirect:/menu";
+	}
+	*/
+	
+	
+	/*
+	 * 한번에 하나만 효율적으로 사용 
+	 * [UPDATE] - 다중 가격 데이터 수정(원 쿼리 - 1번에 처리하는 것을 뜻함)
+     * [INSERT] - 수정한 가격 데이터 등록(원 쿼리 - 1번에 처리하는 것을 뜻함)
+	 * menu.html 에서 <td><input type="checkBox" name="chkCoffeeNo" th:value="${prod.get('no')}"></td> 의 name값을 @RequestParam 적음
+	 * menu.html 에서 <input type="hidden" name="hidden_price">의 name값을 @RequestParam 적음
+	 */
+	@PostMapping("/menu_updatePrice")
+	public String doUpdatePrice(@RequestParam("chkCoffeeNo") List<String> chkList, @RequestParam("hidden_price") String strPrice) {
+		
+		int int1 = menuSvc.doUpdatePriceOne(chkList, strPrice);
+		int int2 = menuSvc.doInsertLogOne(chkList, strPrice);
+	
 		return "redirect:/menu";
 	}
 }
