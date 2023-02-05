@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface MenuDao {
 
-	/* [SELECT] - 메뉴 조회 */
+	/* [SELECT] - 메뉴 전체 조회  */
 	List<Map<String, Object>> doList();
 	
 	/* [INSERT] - 메뉴 등록 */
@@ -23,4 +23,8 @@ public interface MenuDao {
 
 	/* [UPDATE] - 메뉴 수정 */
 	int doUpdate(@Param("strNo") String no, @Param("strCoffee") String coffee, @Param("strKind") String kind, @Param("strPrice") String price);
+
+	/* [SELECT] - 검색 기능(Search) */
+	List<Map<String, Object>> doSearch(@Param("strStartDate") String start_date, @Param("strEndDate") String end_date, @Param("strCoffee") String coffee, @Param("strKind") String kind);
+
 }

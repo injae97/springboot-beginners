@@ -23,6 +23,7 @@ public class MenuSvc {
 		log.info("================ MenuSvc , 생성자 ===================");
 	}
 	
+	/* [SELECT] - 메뉴 전체 조회  */
 	public List<Map<String, Object>> doList() {
 
 		List<Map<String, Object>> list = menuDao.doList();
@@ -93,5 +94,12 @@ public class MenuSvc {
 	public int doUpdate(String strNo, String strCoffee, String strKind, String strPrice) {
 		int intI = menuDao.doUpdate(strNo, strCoffee, strKind, strPrice);
 		return intI;
-	}	
+	}
+
+	/* [SELECT] - 검색 기능(Search) */
+	public List<Map<String, Object>> doSearch(String strStartDate, String strEndDate, String strCoffee, String strKind) {
+		
+		List<Map<String, Object>> list = menuDao.doSearch(strStartDate, strEndDate, strCoffee, strKind);
+		return list;
+	}
 }

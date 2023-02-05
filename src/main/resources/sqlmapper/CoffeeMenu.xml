@@ -6,7 +6,7 @@
 <!-- namespace = Dao 위치 -->  
 <mapper namespace="com.boot.sailing.dao.MenuDao">
 
-	<!-- [SELECT] - 메뉴 조회 -->
+	<!-- [SELECT] - 메뉴 전체 조회 -->
 	<!-- id는 Dao의 메소드 이름: doList -->
 	<!-- resultType는 Dao의 type: map -->
 	<!-- List<Map<String, Object>> doList(); 에서 type은 map -->
@@ -56,4 +56,29 @@
    </update>
    
    
+	<!-- [SELECT] - 메뉴 검색 조건에 의한 조회(Search) -->
+	<!-- id는 Dao의 메소드 이름: doSearch -->
+	<!-- List<Map<String, Object>> doSearch(String strStartDate, String strEndDate, String strCoffee, String strKind) 에서 type은 map -->
+	<!--  WHERE 1=1은 TRUE 값을 일단 넘겨줌(AND) -->
+	<!--
+	a.  <![CDATA[   ]]> : xml 파싱에 관여하지 않도록 처리(열고 닫아주면 됨)
+	b.  <   : &lt;
+	c.  >   : &gt;
+	-->
+	<select id="doSearch" resultType="map">
+		SELECT NO, coffee, kind, price,
+				DATE_FORMAT(reg_day, '%Y-%m-%d') AS reg_day,
+				DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
+		FROM coffee_menu
+		WHERE 1=1
+		AND reg_day >= DATE_FORMAT(#{strStartDate},'%Y%m%d')
+		AND reg_day &lt; DATE_ADD(DATE_FORMAT(#{strEndDate},'%Y%m%d'),INTERVAL +1 DAY) # +1일 한 이유는 2023-06-18 까지 나와야 하기 때문
+		<!-- MenuCon.java > @RequestParam(value = "coffee", defaultValue = "ALL") String strCoffee에서 defaultValue를 null 대신 적어줌 -->
+		<if test="strCoffee != 'ALL'">
+			AND coffee LIKE CONCAT(#{strCoffee}, '%')
+		</if>
+		<if test="strKind != 'ALL'">
+			AND kind = #{strKind}
+		</if>
+	</select>
 </mapper>

@@ -22,6 +22,10 @@ public class MenuCon {
 	@Autowired
 	MenuSvc menuSvc;
 	
+	/*
+	 * [SELECT] - 메뉴 전체 조회 	
+	 * 해당 검색 결과만 받기 위하여 List<Map<String, Object>> list 사용
+	 */
 	@GetMapping("/menu")
 	public String doMenu(Model model) {
 
@@ -92,4 +96,24 @@ public class MenuCon {
 		return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
 	}
 	
+	
+	/*
+	 * [SELECT] - 검색 기능(Search)
+	 * 해당 검색 결과만 받기 위하여 List<Map<String, Object>> list 사용
+	 * Model model로 menu.html에 있는 <tr th:each="prod : ${list}">을 뿌려주기 위해 list로 넘겨줌
+	 */
+	@PostMapping("/menu_search")
+	public String doSearch(
+			@RequestParam("start_date") String strStartDate, 
+			@RequestParam("end_date") String strEndDate, 
+			@RequestParam(value = "coffee", defaultValue = "ALL") String strCoffee,  /* null이 올수 있는 경우에 defaultValue = "ALL"를 넣어주면 좋다. */
+			@RequestParam("kind") String strKind,
+			Model model)	
+	{
+        log.info("==========================================================");
+        log.info("start_date:" + strStartDate);
+        List<Map<String, Object>> list = menuSvc.doSearch(strStartDate, strEndDate, strCoffee, strKind);
+		model.addAttribute("list", list);
+		return "/menu/menu"; 
+	}
 }
