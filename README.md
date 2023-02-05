@@ -987,3 +987,6 @@ e. Mapper
             </foreach>
         </insert>
 ```
+
+## 💡 version1(Map, List) & version2(Vo, DTO)
+    - version1: Map, List 사용,  version2: Vo, DTO 사용
