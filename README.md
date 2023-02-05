@@ -596,6 +596,7 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
            </update>
            
 ## 💡 [SELECT] - 메뉴 검색 조건에 의한 조회(Search)
+```java
     * ★ DB 흐름 ★
          - Controller> Service > DAO > Mapper > DB
             - Controller(대문) > Service(Service에서 DAO 값을 가져옴) > DAO(DAO 내용이 Mybatis 통해 Mapper) 
@@ -748,3 +749,4 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
                     AND kind = #{strKind}
                 </if>
             </select>
+```
