@@ -864,3 +864,126 @@ e. Mapper
             VALUES (#{strNo}, CAST(#{strPrice} as INTEGER))
         </insert>
 ```
+
+## 💡 원 쿼리(한 번에 처리) - [UPDATE] - 다중 가격 데이터 수정(체크박스), [INSERT] - 수정한 가격 데이터 등록
+```java
+a. html 
+    a. /src/main/resources/templates/menu/menu.html
+        - 체크 박스 기능 부여 후 다중 데이터 처리를 하기 위함
+        
+            <!--MenuCon에 list에 넣은 값을 호출 -->
+            <!-- Thymeleaf - for loop -->      
+            <tr th:each="prod : ${list}">
+                <td><input type="checkBox" name="chkCoffeeNo" th:value="${prod.get('no')}"></td>
+    
+    b. /src/main/resources/templates/menu/menu.html
+        - form tag로 table를 감싸줌(action에 값을 부여하여 컨트롤러에서 행위하기 위함)
+        
+            <!-- Post 방식으로 받으며 action에 Controller Mapping 값으로 설정(/src/main/java/com/boot/sailing/controller/MenuCon.java) -->
+            <!-- name들은 데이터베이스에서 지정한 컬럼 값 그대로 사용해야 함 -->   
+            <form name="formTable" id="IdFormTable" method="post" action="/ "> 
+            <table class="table">
+            <thead>                 
+            <!--MenuCon에 list에 넣은 값을 호출 -->
+            <!-- Thymeleaf - for loop -->      
+            <tr th:each="prod : ${list}">
+              <td><input type="checkBox" name="chkCoffeeNo" th:value="${prod.get('no')}"></td>
+              <td th:text="${prod.get('no')}">커피No</th>
+              <td th:text="${prod.get('coffee')}">메뉴명</td>
+              <td th:text="${prod.get('kind')}">종류</td>
+              <td th:text="${prod.get('price')}">가격</td>
+              <td th:text="${prod.get('reg_day')}">등록일</td>
+              <td th:text="${prod.get('mod_day')}">수정일</td>
+              <td><a th:href="@{/menu_up(no=${prod.get('no')})}">수정</a></td>
+              <td><a th:href="@{/menu_del(no=${prod.get('no')})}">삭제</a></td>
+            </tr>
+              
+            </tbody>
+            </table>
+            </form> 
+            
+
+b. Controller
+    - /src/main/java/com/boot/sailing/controller/MenuCon.java
+        
+        /*
+         * 한번에 하나만 효율적으로 사용 
+         * [UPDATE] - 다중 가격 데이터 수정(원 쿼리 - 1번에 처리하는 것을 뜻함)
+         * [INSERT] - 수정한 가격 데이터 등록(원 쿼리 - 1번에 처리하는 것을 뜻함)
+         * menu.html 에서 <td><input type="checkBox" name="chkCoffeeNo" th:value="${prod.get('no')}"></td> 의 name값을 @RequestParam 적음
+         * menu.html 에서 <input type="hidden" name="hidden_price">의 name값을 @RequestParam 적음
+         */
+        @PostMapping("/menu_updatePrice")
+        public String doUpdatePrice(@RequestParam("chkCoffeeNo") List<String> chkList, @RequestParam("hidden_price") String strPrice) {
+            
+            int int1 = menuSvc.doUpdatePriceOne(chkList, strPrice);
+            int int2 = menuSvc.doInsertLogOne(chkList, strPrice);
+        
+            return "redirect:/menu";
+        }
+        
+    * 이제 Controller > Service로 접근해야 하니 여기서는 menuSvc.doInsert()로 설정한다.
+        
+        
+c. Serivce
+    - /src/main/java/com/boot/sailing/service/MenuSvc.java
+    
+        /* [UPDATE] - 다중 가격 데이터 수정(원 쿼리 - 1번에 처리하는 것을 뜻함) */
+        public int doUpdatePriceOne(List<String> chkList, String strPrice) {
+            int int1 = menuDao.doUpdatePriceOne(chkList, strPrice);         
+            return int1;
+        }
+        
+        /* [INSERT] - 수정한 가격 데이터 등록(원 쿼리 - 1번에 처리하는 것을 뜻함) */
+        public int doInsertLogOne(List<String> chkList, String strPrice) {
+            int int2 = menuDao.doInsertLogOne(chkList, strPrice);     
+            return int2;
+        }
+    
+    * 이제 Service > Dao로 접근해야 하니 여기서는 menuDao.doInsert()로 설정한다.
+    
+    
+d. Dao
+    - /src/main/java/com/boot/sailing/dao/MenuDao.java
+    
+        @Mapper
+        public interface MenuDao {
+            
+            /* [UPDATE] - 다중 가격 데이터 수정(원 쿼리 - doUpdatePriceOne) */
+            int doUpdatePriceOne(@Param("chkList") List<String> chkCoffeeNo, @Param("strPrice") String price);
+
+            /* [INSERT] - 수정한 가격 데이터 등록(원 쿼리 - doInsertLogOne) */
+            int doInsertLogOne(@Param("chkList") List<String> chkCoffeeNo, @Param("strPrice") String price);
+        }
+    
+    * 이제 Dao > Mapper로 접근하면 된다
+
+
+e. Mapper
+    - /src/main/resources/sqlmapper/CoffeeMenu.xml
+    
+        <!-- [UPDATE] - 다중 가격 데이터 수정(원 쿼리 - 1번에 처리하는 것을 뜻함) -->
+        <!-- id는 Dao의 메소드 이름: doUpdatePriceOne -->
+        <update id="doUpdatePriceOne">
+              Update coffee_menu
+              SET
+                  price = CAST(#{strPrice} as INTEGER)
+              <!-- collection은     int doUpdatePriceOne(List<String> chkList, String strPrice); 에서의 chkList를 뜻함 -->
+              <!-- open="ID in -> open="no in -->
+              <where>
+                  <foreach item="item" index="index" collection="chkList" open="no in (" separator="," close=")" nullable="true">
+                       #{item}
+                  </foreach>
+              </where>
+        </update>
+       
+        
+        <!-- [INSERT] - 수정한 가격 데이터 등록(원 쿼리 - 1번에 처리하는 것을 뜻함) -->
+        <!-- id는 Dao의 메소드 이름: doInsertLogOne -->
+        <insert id="doInsertLogOne">
+            INSERT INTO log (coffee_no, price)
+            <foreach item="item" index="index" collection="chkList" separator=" UNION ALL " nullable="true">
+                 SELECT #{item}, CAST(#{strPrice} as INTEGER) FROM DUAL
+            </foreach>
+        </insert>
+```
