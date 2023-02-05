@@ -641,21 +641,6 @@ a. html
                 const time7 = new Date(now.setDate(now.getDate() - 100));    // 기간 설정
                 document.getElementById("start_date").value= time7.toISOString().slice(0,10);
                 document.getElementById("end_date").value= new Date().toISOString().slice(0,10);
-
-                function onModify(){
-                    let _price = prompt("가격을 입력하세요");
-
-                    if(_price == undefined){
-                        return;
-                    } else if(_price ==""){
-                        alert("가격을 입력하세요");
-                        onModify();
-                    } else if(_price != ""){
-                        let _frm = document.formTable;
-                        _frm.hidden_price.value = _price;
-                        _frm.submit();
-                    }
-                }
             </script>
         
     
@@ -758,4 +743,124 @@ e. Mapper
                 AND kind = #{strKind}
             </if>
         </select>
+```
+
+## 💡 [UPDATE] - 다중 가격 데이터 수정(체크박스), [INSERT] - 수정한 가격 데이터 등록
+```java
+a. html 
+    a. /src/main/resources/templates/menu/menu.html
+        - 체크 박스 기능 부여 후 다중 데이터 처리를 하기 위함
+        
+            <!--MenuCon에 list에 넣은 값을 호출 -->
+            <!-- Thymeleaf - for loop -->      
+            <tr th:each="prod : ${list}">
+                <td><input type="checkBox" name="chkCoffeeNo" th:value="${prod.get('no')}"></td>
+    
+    b. /src/main/resources/templates/menu/menu.html
+        - form tag로 table를 감싸줌(action에 값을 부여하여 컨트롤러에서 행위하기 위함)
+        
+            <!-- Post 방식으로 받으며 action에 Controller Mapping 값으로 설정(/src/main/java/com/boot/sailing/controller/MenuCon.java) -->
+            <!-- name들은 데이터베이스에서 지정한 컬럼 값 그대로 사용해야 함 -->   
+            <form name="formTable" id="IdFormTable" method="post" action="/ "> 
+            <table class="table">
+            <thead>                 
+            <!--MenuCon에 list에 넣은 값을 호출 -->
+            <!-- Thymeleaf - for loop -->      
+            <tr th:each="prod : ${list}">
+              <td><input type="checkBox" name="chkCoffeeNo" th:value="${prod.get('no')}"></td>
+              <td th:text="${prod.get('no')}">커피No</th>
+              <td th:text="${prod.get('coffee')}">메뉴명</td>
+              <td th:text="${prod.get('kind')}">종류</td>
+              <td th:text="${prod.get('price')}">가격</td>
+              <td th:text="${prod.get('reg_day')}">등록일</td>
+              <td th:text="${prod.get('mod_day')}">수정일</td>
+              <td><a th:href="@{/menu_up(no=${prod.get('no')})}">수정</a></td>
+              <td><a th:href="@{/menu_del(no=${prod.get('no')})}">삭제</a></td>
+            </tr>
+              
+            </tbody>
+            </table>
+            </form> 
+            
+
+b. Controller
+    - /src/main/java/com/boot/sailing/controller/MenuCon.java
+        
+        /*
+         * [UPDATE] - 다중 가격 데이터 수정
+         * [INSERT] - 수정한 가격 데이터 등록
+         * menu.html 에서 <td><input type="checkBox" name="chkCoffeeNo" th:value="${prod.get('no')}"></td> 의 name값을 @RequestParam 적음
+         * menu.html 에서 <input type="hidden" name="hidden_price">의 name값을 @RequestParam 적음
+         */
+        @PostMapping("/menu_updatePrice")
+        public String doUpdatePrice(@RequestParam("chkCoffeeNo") List<String> chkList, @RequestParam("hidden_price") String strPrice) {
+            
+            if(chkList != null) {
+                // for(변수 선언(type 변수명) : 배열)
+                for(String strNo : chkList) {
+                    
+                    int int1 = menuSvc.doUpdatePrice(strNo, strPrice); // [UPDATE] - 다중 가격 데이터 수정
+                    int int2 = menuSvc.doInsertLog(strNo, strPrice); // [INSERT] - 수정한 가격 데이터 등록
+                }
+            }
+                
+            return "redirect:/menu";
+        }
+        
+    * 이제 Controller > Service로 접근해야 하니 여기서는 menuSvc.doInsert()로 설정한다.
+        
+        
+c. Serivce
+    - /src/main/java/com/boot/sailing/service/MenuSvc.java
+    
+        /* [UPDATE] - 다중 가격 데이터 수정 */
+        public int doUpdatePrice(String strNo, String strPrice) {
+            int int1 = menuDao.doUpdatePrice(strNo, strPrice);
+            return int1;
+        }
+
+        /* [INSERT] - 수정한 가격 데이터 등록 */
+        public int doInsertLog(String strNo, String strPrice) {
+            int int2 = menuDao.doInsertLog(strNo, strPrice);
+            return int2;
+        }
+    
+    * 이제 Service > Dao로 접근해야 하니 여기서는 menuDao.doInsert()로 설정한다.
+    
+    
+d. Dao
+    - /src/main/java/com/boot/sailing/dao/MenuDao.java
+    
+        @Mapper
+        public interface MenuDao {
+            
+            /* [UPDATE] - 다중 가격 데이터 수정 */
+            int doUpdatePrice(@Param("strNo") String no, @Param("strPrice") String price);
+            
+            /* [INSERT] - 수정한 가격 데이터 등록 */
+            int doInsertLog(@Param("strNo") String no, @Param("strPrice") String price);
+        }
+    
+    * 이제 Dao > Mapper로 접근하면 된다
+
+
+e. Mapper
+    - /src/main/resources/sqlmapper/CoffeeMenu.xml
+    
+        <!-- [UPDATE] - 다중 가격 데이터 수정 --> 
+        <!-- id는 Dao의 메소드 이름: doSearch -->
+        <update id="doUpdatePrice">
+              Update coffee_menu
+              SET
+                price = CAST(#{strPrice} as INTEGER)
+              Where no = CAST(#{strNo} as INTEGER)
+        </update>
+       
+        
+        <!-- [INSERT] - 가격 로그 데이터 등록 --> 
+        <!-- id는 Dao의 메소드 이름: doInsertLog -->
+        <insert id="doInsertLog">
+            INSERT INTO log (coffee_no, price)
+            VALUES (#{strNo}, CAST(#{strPrice} as INTEGER))
+        </insert>
 ```
