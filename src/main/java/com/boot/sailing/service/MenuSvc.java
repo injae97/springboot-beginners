@@ -102,4 +102,16 @@ public class MenuSvc {
 		List<Map<String, Object>> list = menuDao.doSearch(strStartDate, strEndDate, strCoffee, strKind);
 		return list;
 	}
+
+	/* [UPDATE] - 다중 가격 데이터 수정 */
+	public int doUpdatePrice(String strNo, String strPrice) {
+		int int1 = menuDao.doUpdatePrice(strNo, strPrice);
+		return int1;
+	}
+
+	/* [INSERT] - 수정한 가격 데이터 등록 */
+	public int doInsertLog(String strNo, String strPrice) {
+		int int2 = menuDao.doInsertLog(strNo, strPrice);
+		return int2;
+	}
 }

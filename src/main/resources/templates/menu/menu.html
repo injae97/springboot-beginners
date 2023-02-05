@@ -38,10 +38,11 @@
 	      </select>
 	
 	        &nbsp;&nbsp;<input type="submit" value="조회" style="width: 80px;height: 30px;font-weight: bold; font-size: medium">
-	        
+
 	        <!-- 메뉴 등록 > Controller에서 @GetMapping 값을 적어줌 -->
-	        &nbsp;&nbsp;<button style="width: 80px;height: 30px;font-weight: bold; font-size: medium"><a href="/menu_ins">등록</a></button>
-	        &nbsp;&nbsp;<button style="width: 80px;height: 30px;font-weight: bold; font-size: medium"><a href="~~~">삭제</a></button>
+			&nbsp;&nbsp;<button style="width: 80px;height: 30px;font-weight: bold; font-size: medium"><a href="/menu_ins">등록</a></button>	
+			&nbsp;&nbsp;<button style="width: 80px;height: 30px;font-weight: bold; font-size: medium"><a href="~~~">삭제</a></button>
+			&nbsp;&nbsp;<button type="button" id="IdUpdateAll" style="width: 80px;height: 30px;font-weight: bold; font-size: medium" onclick="onModify()" >가격수정></button>
 
 	        <!-- <a href="javascript:loadDocArray()">test</a> -->
 	        <!--        <label>CheckBox : </label><span id="idCheckBox"></span>-->
@@ -56,23 +57,32 @@
 			  document.getElementById("start_date").value= time7.toISOString().slice(0,10);
 			  document.getElementById("end_date").value= new Date().toISOString().slice(0,10);
 			
+			  /* 가격 수정 */
 			  function onModify(){
 			    let _price = prompt("가격을 입력하세요");
 			
-			    if(_price == undefined){
-			      return;
-			    }else if(_price ==""){
-			      alert("가격을 입력하세요");
-			      onModify();
-			    }else if(_price != ""){
-			       let _frm = document.formTable;
-			       _frm.hidden_price.value = _price;
+				/* 취소를 누르면 값이 undefined 이므로 종료 */
+			    if(_price == undefined) {
+			        return;
+			    } 
+			    /* 가격을 입력 안하면 다시입력하라고 재호출 */
+			    else if(_price =="") {
+			        alert("가격을 입력하세요");
+			        onModify();
+			    } 
+			    /* 가격을 입력 했다면 저장 */
+			    else if(_price != "") {
+			        let _frm = document.formTable; // 만들어 놓은 form tag의 name 값!
+			       _frm.hidden_price.value = _price; // hidden tag에 값을 넣어줌
 			       _frm.submit();
 			    }
 			  }
   		  </script>
 	  </div>
 	
+      <!-- Post 방식으로 받으며 action에 Controller Mapping 값으로 설정(/src/main/java/com/boot/sailing/controller/MenuCon.java) -->
+	  <!-- name들은 데이터베이스에서 지정한 컬럼 값 그대로 사용해야 함 -->   
+	  <form name="formTable" id="IdFormTable" method="post" action="/menu_updatePrice">
 	  <table class="table">
 	    <thead>
 	      <tr class="tr_td">
@@ -105,7 +115,7 @@
 	    <!--MenuCon에 list에 넣은 값을 호출 -->
 	    <!-- Thymeleaf - for loop -->      
 	    <tr th:each="prod : ${list}">
-	      <td>Chk</td>
+	      <td><input type="checkBox" name="chkCoffeeNo" th:value="${prod.get('no')}"></td>
 	      <td th:text="${prod.get('no')}">커피No</th>
 	      <td th:text="${prod.get('coffee')}">메뉴명</td>
 	      <td th:text="${prod.get('kind')}">종류</td>
@@ -118,6 +128,8 @@
 	      
 	    </tbody>
 	  </table>
+	      <input type="hidden" name="hidden_price">
+	  </form>
 	</div>
 
 <!-- 푸터 위치 -->

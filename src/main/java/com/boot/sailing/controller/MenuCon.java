@@ -116,4 +116,27 @@ public class MenuCon {
 		model.addAttribute("list", list);
 		return "/menu/menu"; 
 	}
+	
+	
+	
+	/*
+	 * [UPDATE] - 다중 가격 데이터 수정
+     * [INSERT] - 수정한 가격 데이터 등록
+	 * menu.html 에서 <td><input type="checkBox" name="chkCoffeeNo" th:value="${prod.get('no')}"></td> 의 name값을 @RequestParam 적음
+	 * menu.html 에서 <input type="hidden" name="hidden_price">의 name값을 @RequestParam 적음
+	 */
+	@PostMapping("/menu_updatePrice")
+	public String doUpdatePrice(@RequestParam("chkCoffeeNo") List<String> chkList, @RequestParam("hidden_price") String strPrice) {
+		
+		if(chkList != null) {
+			// for(변수 선언(type 변수명) : 배열)
+			for(String strNo : chkList) {
+				
+				int int1 = menuSvc.doUpdatePrice(strNo, strPrice); // [UPDATE] - 다중 가격 데이터 수정
+				int int2 = menuSvc.doInsertLog(strNo, strPrice); // [INSERT] - 수정한 가격 데이터 등록
+			}
+		}
+			
+		return "redirect:/menu";
+	}
 }

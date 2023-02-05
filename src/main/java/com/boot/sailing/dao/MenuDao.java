@@ -27,4 +27,9 @@ public interface MenuDao {
 	/* [SELECT] - 검색 기능(Search) */
 	List<Map<String, Object>> doSearch(@Param("strStartDate") String start_date, @Param("strEndDate") String end_date, @Param("strCoffee") String coffee, @Param("strKind") String kind);
 
+	/* [UPDATE] - 다중 가격 데이터 수정 */
+	int doUpdatePrice(@Param("strNo") String no, @Param("strPrice") String price);
+	
+	/* [INSERT] - 수정한 가격 데이터 등록 */
+	int doInsertLog(@Param("strNo") String no, @Param("strPrice") String price);
 }
