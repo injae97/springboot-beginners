@@ -1,0 +1,42 @@
+## 💡 DB 검색 조건에 의한 쿼리
+
+    a. DB에서 쿼리를 수행한 후 Mapper에 맞게 수정 
+        SELECT NO, coffee, kind, price,
+                DATE_FORMAT(reg_day, '%Y-%m-%d') AS reg_day,
+                DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
+        FROM coffee_menu
+        WHERE 1=1
+        AND reg_day >= DATE_FORMAT('2022-06-18','%Y%m%d')
+        AND reg_day < DATE_ADD(DATE_FORMAT('2023-06-18','%Y%m%d'),INTERVAL +1 DAY) # +1일 한 이유는 2023-06-18 까지 나와야 하기 때문
+        AND coffee LIKE CONCAT('아', '%')
+        AND kind = '커피'
+        ;
+    
+    b. a에서의 쿼리를 Mybatis(Mapper)에 맞게 수정
+        - /src/main/resources/sqlmapper/CoffeeMenu.xml
+            
+			<!-- [SELECT] - 메뉴 검색 조건에 의한 조회(Search) -->
+			<!-- id는 Dao의 메소드 이름: doSearch -->
+			<!-- List<Map<String, Object>> doSearch(String strStartDate, String strEndDate, String strCoffee, String strKind) 에서 type은 map -->
+			<!--  WHERE 1=1은 TRUE 값을 일단 넘겨줌(AND) -->
+			<!--
+			a.  <![CDATA[   ]]> : xml 파싱에 관여하지 않도록 처리(열고 닫아주면 됨)
+			b.  <   : &lt;
+			c.  >   : &gt;
+			-->
+			<select id="doSearch" resultType="map">
+				SELECT NO, coffee, kind, price,
+						DATE_FORMAT(reg_day, '%Y-%m-%d') AS reg_day,
+						DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
+				FROM coffee_menu
+				WHERE 1=1
+				AND reg_day >= DATE_FORMAT(#{strStartDate},'%Y%m%d')
+				AND reg_day &lt; DATE_ADD(DATE_FORMAT(#{strEndDate},'%Y%m%d'),INTERVAL +1 DAY) # +1일 한 이유는 2023-06-18 까지 나와야 하기 때문
+				<!-- MenuCon.java > @RequestParam(value = "coffee", defaultValue = "ALL") String strCoffee에서 defaultValue를 null 대신 적어줌 -->
+				<if test="strCoffee != 'ALL'">
+					AND coffee LIKE CONCAT(#{strCoffee}, '%')
+				</if>
+				<if test="strKind != 'ALL'">
+					AND kind = #{strKind}
+				</if>
+			</select>
