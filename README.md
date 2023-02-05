@@ -170,14 +170,15 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
 
 ## 💡 How to set utf-8 in STS?
     - Project 클릭 > Alt + Enter > Resource > Text file encoding(Other: UTF-8) > Apply and close 
-    
+  
+## 💡 What is the flow of DB in Spring?
+    * ★ DB 흐름 ★
+        - Controller> Service > DAO > Mapper > DB
+            - Controller(대문) > Service(Service에서 DAO 값을 가져옴) > DAO(DAO 내용이 Mybatis 통해 Mapper) 
+                * Controller 대문 역할을 하려면 @Autowired로 Service 값을 가져와야 한다.
+                
 ## 💡 [SELECT] - 메뉴 전체 조회 
 ```java
-* ★ DB 흐름 ★
-     - Controller> Service > DAO > Mapper > DB
-        - Controller(대문) > Service(Service에서 DAO 값을 가져옴) > DAO(DAO 내용이 Mybatis 통해 Mapper) 
-            * Controller 대문 역할을 하려면 @Autowired로 Service 값을 가져와야 한다.
-
 a. html 
     a. /src/main/resources/templates/menu/menu.html
         - 커피 메뉴 클릭 시 전체 조회
@@ -195,7 +196,8 @@ a. html
               <td><a th:href="@{/menu_up(no=${prod.get('no')})}">수정</a></td>
               <td><a th:href="@{/menu_del(no=${prod.get('no')})}">삭제</a></td>
             </tr>
-                    
+       
+       
 b. Controller
     - /src/main/java/com/boot/sailing/controller/MenuCon.java
     
@@ -221,6 +223,7 @@ b. Controller
         
     * 이제 Controller > Service로 접근해야 하니 여기서는 menuSvc.doInsert()로 설정한다.
         
+        
 c. Serivce
     - /src/main/java/com/boot/sailing/service/MenuSvc.java
     
@@ -236,6 +239,7 @@ c. Serivce
     
     * 이제 Service > Dao로 접근해야 하니 여기서는 menuDao.doInsert()로 설정한다.
     
+    
 d. Dao
     - /src/main/java/com/boot/sailing/dao/MenuDao.java
 
@@ -248,6 +252,7 @@ d. Dao
         }
     
     * 이제 Dao > Mapper로 접근하면 된다
+
 
 e. Mapper
     - /src/main/resources/sqlmapper/CoffeeMenu.xml
@@ -266,11 +271,6 @@ e. Mapper
     
 ## 💡 [INSERT] - 메뉴 등록 
 ```java
-* ★ DB 흐름 ★
-     - Controller> Service > DAO > Mapper > DB
-        - Controller(대문) > Service(Service에서 DAO 값을 가져옴) > DAO(DAO 내용이 Mybatis 통해 Mapper) 
-            * Controller 대문 역할을 하려면 @Autowired로 Service 값을 가져와야 한다.
-
 a. html 
     a. /src/main/resources/templates/menu/menu.html
         - 등록하기 버튼 클릭 시 href에 화면단 경로로 수정
@@ -298,6 +298,7 @@ a. html
                 <input type="submit" value="메뉴 등록" style="width: 100px;height: 30px;font-weight: bold; font-size: medium">
               </fieldset>
             </form>
+    
     
 b. Controller
     - /src/main/java/com/boot/sailing/controller/MenuCon.java
@@ -327,6 +328,7 @@ b. Controller
         
     * 이제 Controller > Service로 접근해야 하니 여기서는 menuSvc.doInsert()로 설정한다.
         
+        
 c. Serivce
     - /src/main/java/com/boot/sailing/service/MenuSvc.java
     
@@ -337,6 +339,7 @@ c. Serivce
         }   
     
     * 이제 Service > Dao로 접근해야 하니 여기서는 menuDao.doInsert()로 설정한다.
+    
     
 d. Dao
     - /src/main/java/com/boot/sailing/dao/MenuDao.java
@@ -352,6 +355,7 @@ d. Dao
     
     * 이제 Dao > Mapper로 접근하면 된다
 
+
 e. Mapper
     - /src/main/resources/sqlmapper/CoffeeMenu.xml
     
@@ -365,11 +369,6 @@ e. Mapper
             
 ## 💡 [DELETE] - 메뉴 삭제
 ```
-* ★ DB 흐름 ★
-     - Controller> Service > DAO > Mapper > DB
-        - Controller(대문) > Service(Service에서 DAO 값을 가져옴) > DAO(DAO 내용이 Mybatis 통해 Mapper) 
-            * Controller 대문 역할을 하려면 @Autowired로 Service 값을 가져와야 한다.
-
 a. html 
     a. /src/main/resources/templates/menu/menu.html
         - 삭제 클릭 시 href에 /menu_del?no=1 받게 설정
@@ -387,6 +386,7 @@ a. html
               <td><a th:href="@{/menu_del(no=${prod.get('no')})}">삭제</a></td>
             </tr>
 
+
 b. Controller
     - /src/main/java/com/boot/sailing/controller/MenuCon.java
     
@@ -402,7 +402,8 @@ b. Controller
         }            
         
     * 이제 Controller > Service로 접근해야 하니 여기서는 menuSvc.doInsert()로 설정한다.
-        
+     
+     
 c. Serivce
     - /src/main/java/com/boot/sailing/service/MenuSvc.java
     
@@ -413,6 +414,7 @@ c. Serivce
         }    
     
     * 이제 Service > Dao로 접근해야 하니 여기서는 menuDao.doInsert()로 설정한다.
+    
     
 d. Dao
     - /src/main/java/com/boot/sailing/dao/MenuDao.java
@@ -428,6 +430,7 @@ d. Dao
     
     * 이제 Dao > Mapper로 접근하면 된다
 
+
 e. Mapper
     - /src/main/resources/sqlmapper/CoffeeMenu.xml
     
@@ -440,11 +443,6 @@ e. Mapper
             
 ## 💡 [SELECT] - 메뉴 수정 클릭 시 해당 데이터 값 호출(doListOne), ★ UPDATE를 위한 용도 ★
 ```java
-* ★ DB 흐름 ★
-     - Controller> Service > DAO > Mapper > DB
-        - Controller(대문) > Service(Service에서 DAO 값을 가져옴) > DAO(DAO 내용이 Mybatis 통해 Mapper) 
-            * Controller 대문 역할을 하려면 @Autowired로 Service 값을 가져와야 한다.
-
 a. html 
     a. /src/main/resources/templates/menu/menu.html
         - 수정 클릭 시 href에 /menu_up?no=1 받게 설정
@@ -462,6 +460,7 @@ a. html
               <td><a th:href="@{/menu_del(no=${prod.get('no')})}">삭제</a></td>
             </tr>
 
+
 b. Controller
     - /src/main/java/com/boot/sailing/controller/MenuCon.java
     
@@ -478,6 +477,7 @@ b. Controller
         
     * 이제 Controller > Service로 접근해야 하니 여기서는 menuSvc.doInsert()로 설정한다.
         
+        
 c. Serivce
     - /src/main/java/com/boot/sailing/service/MenuSvc.java
     
@@ -490,6 +490,7 @@ c. Serivce
     
     * 이제 Service > Dao로 접근해야 하니 여기서는 menuDao.doInsert()로 설정한다.
     
+    
 d. Dao
     - /src/main/java/com/boot/sailing/dao/MenuDao.java
     
@@ -501,6 +502,7 @@ d. Dao
         }
     
     * 이제 Dao > Mapper로 접근하면 된다
+
 
 e. Mapper
     - /src/main/resources/sqlmapper/CoffeeMenu.xml
@@ -519,11 +521,6 @@ e. Mapper
 
 ## 💡 [UPDATE] - 메뉴 수정 
 ```java
-* ★ DB 흐름 ★
-     - Controller> Service > DAO > Mapper > DB
-        - Controller(대문) > Service(Service에서 DAO 값을 가져옴) > DAO(DAO 내용이 Mybatis 통해 Mapper) 
-            * Controller 대문 역할을 하려면 @Autowired로 Service 값을 가져와야 한다.
-
 a. html 
     a. /src/main/resources/templates/menu/menu_up.html
         - 수정 > 메뉴 수정 클릭 시 수정 되게끔 하기 위함
@@ -550,6 +547,7 @@ a. html
             
             <input type="hidden" name="no" th:value="${map.get('no')}">
 
+
 b. Controller
     - /src/main/java/com/boot/sailing/controller/MenuCon.java
     
@@ -566,7 +564,8 @@ b. Controller
         }      
         
     * 이제 Controller > Service로 접근해야 하니 여기서는 menuSvc.doInsert()로 설정한다.
-        
+     
+     
 c. Serivce
     - /src/main/java/com/boot/sailing/service/MenuSvc.java
     
@@ -577,6 +576,7 @@ c. Serivce
         }    
     
     * 이제 Service > Dao로 접근해야 하니 여기서는 menuDao.doInsert()로 설정한다.
+    
     
 d. Dao
     - /src/main/java/com/boot/sailing/dao/MenuDao.java
@@ -589,6 +589,7 @@ d. Dao
         }
     
     * 이제 Dao > Mapper로 접근하면 된다
+
 
 e. Mapper
     - /src/main/resources/sqlmapper/CoffeeMenu.xml
@@ -606,11 +607,6 @@ e. Mapper
            
 ## 💡 [SELECT] - 메뉴 검색 조건에 의한 조회(Search)
 ```java
-* ★ DB 흐름 ★
-     - Controller> Service > DAO > Mapper > DB
-        - Controller(대문) > Service(Service에서 DAO 값을 가져옴) > DAO(DAO 내용이 Mybatis 통해 Mapper) 
-            * Controller 대문 역할을 하려면 @Autowired로 Service 값을 가져와야 한다.
-
 a. html 
     a. /src/main/resources/templates/menu/menu.html
         - 검색 조건 입력 후 조회 버튼 클릭 시 해당 값만 나오게 하기 위함
@@ -680,6 +676,7 @@ a. html
               <td><a th:href="@{/menu_del(no=${prod.get('no')})}">삭제</a></td>
             </tr>
 
+
 b. Controller
     - /src/main/java/com/boot/sailing/controller/MenuCon.java
     
@@ -705,6 +702,7 @@ b. Controller
         
     * 이제 Controller > Service로 접근해야 하니 여기서는 menuSvc.doInsert()로 설정한다.
         
+        
 c. Serivce
     - /src/main/java/com/boot/sailing/service/MenuSvc.java
     
@@ -716,6 +714,7 @@ c. Serivce
         }
     
     * 이제 Service > Dao로 접근해야 하니 여기서는 menuDao.doInsert()로 설정한다.
+    
     
 d. Dao
     - /src/main/java/com/boot/sailing/dao/MenuDao.java
@@ -729,6 +728,7 @@ d. Dao
         }
     
     * 이제 Dao > Mapper로 접근하면 된다
+
 
 e. Mapper
     - /src/main/resources/sqlmapper/CoffeeMenu.xml
