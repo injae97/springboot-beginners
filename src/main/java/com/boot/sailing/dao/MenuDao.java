@@ -5,13 +5,14 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.web.bind.annotation.RequestParam;
+
+import com.boot.sailing.vo.Coffee_menu;
 
 @Mapper
 public interface MenuDao {
 
 	/* [SELECT] - 메뉴 전체 조회  */
-	List<Map<String, Object>> doList();
+	List<Coffee_menu> doList();
 	
 	/* [INSERT] - 메뉴 등록 */
 	int doInsert(@Param("strCoffee") String coffee, @Param("strKind")  String kind, @Param("strPrice")  String price);
@@ -26,7 +27,7 @@ public interface MenuDao {
 	int doUpdate(@Param("strNo") String no, @Param("strCoffee") String coffee, @Param("strKind") String kind, @Param("strPrice") String price);
 
 	/* [SELECT] - 검색 기능(Search) */
-	List<Map<String, Object>> doSearch(@Param("strStartDate") String start_date, @Param("strEndDate") String end_date, @Param("strCoffee") String coffee, @Param("strKind") String kind);
+	List<Coffee_menu> doSearch(@Param("strStartDate") String start_date, @Param("strEndDate") String end_date, @Param("strCoffee") String coffee, @Param("strKind") String kind);
 
 	/* [UPDATE] - 다중 가격 데이터 수정 */
 	int doUpdatePrice(@Param("strNo") String no, @Param("strPrice") String price);

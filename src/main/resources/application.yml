@@ -15,7 +15,7 @@ spring:
     livereload:
       enabled: true
     restart:
-      enabled: false
+      enabled: true
 
 --- # Configuration MariaDb
 spring:
@@ -31,4 +31,4 @@ spring:
 mybatis:
   mapper-locations: sqlmapper/**/*.xml
   configuration: 
-    map-underscore-to-camel-case: true
+    map-underscore-to-camel-case: false

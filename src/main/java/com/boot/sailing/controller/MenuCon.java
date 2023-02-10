@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.boot.sailing.service.MenuSvc;
+import com.boot.sailing.vo.Coffee_menu;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -24,17 +25,17 @@ public class MenuCon {
 	
 	/*
 	 * [SELECT] - 메뉴 전체 조회 	
-	 * 해당 검색 결과만 받기 위하여 List<Map<String, Object>> list 사용
+	 * 해당 검색 결과만 받기 위하여 List<Coffee_menu> Vo 사용
 	 */
 	@GetMapping("/menu")
 	public String doMenu(Model model) {
 
-		// List<Map<String, Object>> list = new MenuSvc().doList(); // MenuSvc.java에서 새로운 객체를 생성하여 doList 메소드 호출 
-		List<Map<String, Object>> list = menuSvc.doList(); // MenuSvc에 @Service로 Bean을 등록한 것을 @Autowired를 통해 주입(Injection) 받아 사용
-
+		List<Coffee_menu> list = menuSvc.doList(); // Vo 사용
+		
 		model.addAttribute("list", list);
-		model.addAttribute("hello", "========== MenuCon ==========");
-
+		model.addAttribute("hello", "========== MenuCon VO 사용 ==========");
+		
+		System.out.println("@@@@@@@@@list@@@@@@@@@@" + list);
 		return "/menu/menu"; 
 	}  
 	
@@ -110,9 +111,9 @@ public class MenuCon {
 			@RequestParam("kind") String strKind,
 			Model model)	
 	{
-        log.info("==========================================================");
-        log.info("start_date:" + strStartDate);
-        List<Map<String, Object>> list = menuSvc.doSearch(strStartDate, strEndDate, strCoffee, strKind);
+		log.info("==========================================================");
+		log.info("start_date:" + strStartDate);
+		List<Coffee_menu> list = menuSvc.doSearch(strStartDate, strEndDate, strCoffee, strKind);
 		model.addAttribute("list", list);
 		return "/menu/menu"; 
 	}

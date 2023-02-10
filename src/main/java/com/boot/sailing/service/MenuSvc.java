@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.boot.sailing.dao.MenuDao;
+import com.boot.sailing.vo.Coffee_menu;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -23,10 +24,10 @@ public class MenuSvc {
 		log.info("================ MenuSvc , 생성자 ===================");
 	}
 	
-	/* [SELECT] - 메뉴 전체 조회  */
-	public List<Map<String, Object>> doList() {
+	/* [SELECT] - 메뉴 전체 조회(Vo 사용)  */
+	public List<Coffee_menu> doList() {
 
-		List<Map<String, Object>> list = menuDao.doList();
+		List<Coffee_menu> list = menuDao.doList();
 		
 		log.info(list);
 		return list;	
@@ -97,9 +98,9 @@ public class MenuSvc {
 	}
 
 	/* [SELECT] - 검색 기능(Search) */
-	public List<Map<String, Object>> doSearch(String strStartDate, String strEndDate, String strCoffee, String strKind) {
+	public List<Coffee_menu> doSearch(String strStartDate, String strEndDate, String strCoffee, String strKind) {
 		
-		List<Map<String, Object>> list = menuDao.doSearch(strStartDate, strEndDate, strCoffee, strKind);
+		List<Coffee_menu> list = menuDao.doSearch(strStartDate, strEndDate, strCoffee, strKind);
 		return list;
 	}
 
