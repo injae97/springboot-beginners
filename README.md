@@ -177,6 +177,15 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
             - Controller(대문) > Service(Service에서 DAO 값을 가져옴) > DAO(DAO 내용이 Mybatis 통해 Mapper) 
                 * Controller 대문 역할을 하려면 @Autowired로 Service 값을 가져와야 한다.
                 
+				
+## 💡 Version1(Map, List) & Version2(Vo, DTO)
+    a. Version1(Version1 디렉토리에 백업)
+	    - Map, List 사용
+	
+	b. Version2(현재 깃허브 Version2로 커밋)
+	    - Vo 사용				
+				
+				
 ## 💡 [SELECT] - 메뉴 전체 조회 
 ```java
 a. html 
@@ -987,6 +996,286 @@ e. Mapper
             </foreach>
         </insert>
 ```
+	
+## 💡 Map, List -> VO (doList(조회) - Map / Vo로 정리)
+     
+    a. Vo class 생성
+	    - /src/main/java/com/boot/sailing/vo/Coffee_menu.java
 
-## 💡 version1(Map, List) & version2(Vo, DTO)
-    - version1: Map, List 사용,  version2: Vo, DTO 사용
+			@Data
+			public class Coffee_menu {
+
+				private String no;
+				private String coffee;
+				private String kind;
+				private String price;
+				private String reg_day;
+				private String mod_day;
+			}
+	
+	
+	b. Controller
+	    - /src/main/java/com/boot/sailing/controller/MenuCon.java
+		
+			/*
+			 * [SELECT] - 메뉴 전체 조회 - Map 사용
+			 * 해당 검색 결과만 받기 위하여 List<Map<String, Object>>
+			 */
+			@GetMapping("/menu")
+			public String doMenu(Model model) {
+
+				List<Map<String, Object>> list = menuSvc.doList(); // List 사용
+
+				model.addAttribute("list", list);
+				model.addAttribute("hello", "========== MenuCon ==========");
+
+				return "/menu/menu"; 
+			}  
+		    
+			
+			/*
+			 * [SELECT] - 메뉴 전체 조회 	- Vo 사용
+			 * 해당 검색 결과만 받기 위하여 List<Coffee_menu>
+			 */
+			@GetMapping("/menu")
+			public String doMenu(Model model) {
+
+				List<Coffee_menu> list = menuSvc.doList(); // Vo 사용
+				model.addAttribute("list", list);
+				model.addAttribute("hello", "========== MenuCon ==========");
+				
+				return "/menu/menu"; 
+			}  
+	
+	
+	c. Service 
+	    - /src/main/java/com/boot/sailing/service/MenuSvc.java	
+		
+			/* [SELECT] - 메뉴 전체 조회 - Map 사용 */
+			public List<Map<String, Object>> doList() {
+
+				List<Map<String, Object>> list = menuDao.doList();
+				
+				log.info(list);
+				return list;	
+			}
+		
+		
+			/* [SELECT] - 메뉴 전체 조회 - Vo 사용 */
+			public List<Coffee_menu> doList() {
+
+				List<Coffee_menu> list = menuDao.doList();
+				
+				log.info(list);
+				return list;	
+			}
+			
+			
+	d. Dao
+	    - /src/main/java/com/boot/sailing/dao/MenuDao.java
+		
+			/* [SELECT] - 메뉴 전체 조회 - Map 사용 */
+			List<Map<String, Object>> doList();
+		
+		
+			/* [SELECT] - 메뉴 전체 조회 - Vo 사용 */
+			List<Coffee_menu> doList();
+			
+			
+	e. Mapper 
+	    - /src/main/resources/sqlmapper/CoffeeMenu.xml
+		
+			<!-- [SELECT] - 메뉴 전체 조회 -->
+			<!-- id는 Dao의 메소드 이름: doList -->
+			<!-- resultType는 Dao의 type: Map -->
+			<!-- List<Map<String, Object>> doList(); 에서 type은 map -->
+			<select id="doList" resultType="map">
+				SELECT no, coffee, kind, price,
+					DATE_FORMAT(reg_day, '%Y-%m-%d') AS reg_day,
+					DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
+					FROM coffee_menu;
+			</select>
+			 
+			 
+			<!-- [SELECT] - 메뉴 전체 조회 -->
+			<!-- id는 Dao의 메소드 이름: doList -->
+			<!-- resultType는 Dao의 type: Vo -->
+			<!-- List<Coffee_menu> doList(); 에서 type은 Vo -->
+			<select id="doList" resultType="com.boot.sailing.vo.Coffee_menu">
+				SELECT no, coffee, kind, price,
+					DATE_FORMAT(reg_day, '%Y-%m-%d') AS reg_day,
+					DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
+					FROM coffee_menu;
+			</select>
+			
+			
+	f. View 
+	    - /Sailing/src/main/resources/templates/menu/menu.html
+		
+			<!--MenuCon에 list에 넣은 값을 호출 -->
+			<!-- Thymeleaf - for loop Map 사용 -->      
+			<tr th:each="prod : ${list}">
+			  <td><input type="checkBox" name="chkCoffeeNo" th:value="${prod.get('no')}"></td>
+			  <td th:text="${prod.get('no')}">커피No</th>
+			  <td th:text="${prod.get('coffee')}">메뉴명</td>
+			  <td th:text="${prod.get('kind')}">종류</td>
+			  <td th:text="${prod.get('price')}">가격</td>
+			  <td th:text="${prod.get('reg_day')}">등록일</td>
+			  <td th:text="${prod.get('mod_day')}">수정일</td>
+			  <td><a th:href="@{/menu_up(no=${prod.get('no')})}">수정</a></td>
+			  <td><a th:href="@{/menu_del(no=${prod.get('no')})}">삭제</a></td>
+			</tr>
+			
+			
+			<!--MenuCon에 list에 넣은 값을 호출 -->
+			<!-- Thymeleaf - for loop Vo 사용 -->      
+			<tr th:each="prod : ${list}">
+			  <td><input type="checkbox" name="chkCoffeeNo" th:value="${prod.getNo()}"></td>
+			  <td th:text="${prod.getNo()}">커피No</th>
+			  <td th:text="${prod.getCoffee()}">메뉴명</td>
+			  <td th:text="${prod.getKind()}">종류</td>
+			  <td th:text="${#numbers.formatInteger(prod.getPrice(),0,'COMMA')}">가격</td>
+			  <td th:text="${prod.getReg_day()}">등록일</td>
+			  <td th:text="${prod.getMod_day()}">수정일</td>
+			  <td><a th:href="@{menu_up(no=${prod.getNo()})}">수정</a></td>
+			  <td><a th:href="@{menu_del(no=${prod.getNo()})}">삭제</a></td>
+			</tr>
+			
+			* 매우중요 : 만약 제대로 Getter를 가져왔는데 에러가 발생한다면 mybatis map-underscore-to-camel-case이 true 확인(true -> false로 변경)
+			
+
+## 💡 Map, List -> VO (doSearch(검색) - Map / Vo로 정리)
+     
+    a. Vo class 생성
+	    - /src/main/java/com/boot/sailing/vo/Coffee_menu.java
+
+			@Data
+			public class Coffee_menu {
+
+				private String no;
+				private String coffee;
+				private String kind;
+				private String price;
+				private String reg_day;
+				private String mod_day;
+			}
+	
+	
+	b. Controller
+	    - /src/main/java/com/boot/sailing/controller/MenuCon.java
+
+			/*
+			 * [SELECT] - 검색 기능(Search) - Map 사용
+			 * 해당 검색 결과만 받기 위하여 List<Map<String, Object>> list 사용
+			 * Model model로 menu.html에 있는 <tr th:each="prod : ${list}">을 뿌려주기 위해 list로 넘겨줌
+			 */
+			@PostMapping("/menu_search")
+			public String doSearch(
+					@RequestParam("start_date") String strStartDate, 
+					@RequestParam("end_date") String strEndDate, 
+					@RequestParam(value = "coffee", defaultValue = "ALL") String strCoffee,  /* null이 올수 있는 경우에 defaultValue = "ALL"를 넣어주면 좋다. */
+					@RequestParam("kind") String strKind,
+					Model model)	
+			{
+				log.info("==========================================================");
+				log.info("start_date:" + strStartDate);
+				List<Map<String, Object>> list = menuSvc.doSearch(strStartDate, strEndDate, strCoffee, strKind);
+				model.addAttribute("list", list);
+				return "/menu/menu"; 
+			}
+		
+		
+			/*
+			 * [SELECT] - 검색 기능(Search) - Vo 사용
+			 * 해당 검색 결과만 받기 위하여 List<Coffee_menu> 
+			 * Model model로 menu.html에 있는 <tr th:each="prod : ${list}">을 뿌려주기 위해 list로 넘겨줌
+			 */
+			@PostMapping("/menu_search")
+			public String doSearch(
+					@RequestParam("start_date") String strStartDate, 
+					@RequestParam("end_date") String strEndDate, 
+					@RequestParam(value = "coffee", defaultValue = "ALL") String strCoffee,  /* null이 올수 있는 경우에 defaultValue = "ALL"를 넣어주면 좋다. */
+					@RequestParam("kind") String strKind,
+					Model model)	
+			{
+				log.info("==========================================================");
+				log.info("start_date:" + strStartDate);
+				List<Coffee_menu> list = menuSvc.doSearch(strStartDate, strEndDate, strCoffee, strKind);
+				model.addAttribute("list", list);
+				return "/menu/menu"; 
+			}
+		
+		
+	c. Service 
+	    - /src/main/java/com/boot/sailing/service/MenuSvc.java	
+		
+			/* [SELECT] - 검색 기능(Search) - Map 사용 */
+			public List<Map<String, Object>> doSearch(String strStartDate, String strEndDate, String strCoffee, String strKind) {
+				
+				List<Map<String, Object>> list = menuDao.doSearch(strStartDate, strEndDate, strCoffee, strKind);
+				return list;
+			}
+		
+		
+			/* [SELECT] - 메뉴 전체 조회 - Vo 사용 */
+			public List<Coffee_menu> doSearch(String strStartDate, String strEndDate, String strCoffee, String strKind) {
+				
+				List<Coffee_menu> list = menuDao.doSearch(strStartDate, strEndDate, strCoffee, strKind);
+				return list;
+			}
+		
+		
+	d. Dao
+	    - /src/main/java/com/boot/sailing/dao/MenuDao.java
+		
+			/* [SELECT] - 검색 기능(Search) - Map 사용 */
+			List<Map<String, Object>> doSearch(@Param("strStartDate") String start_date, @Param("strEndDate") String end_date, @Param("strCoffee") String coffee, @Param("strKind") String kind);
+			
+		
+			/* [SELECT] - 메뉴 전체 조회 - Vo 사용 */
+			List<Coffee_menu> doSearch(@Param("strStartDate") String start_date, @Param("strEndDate") String end_date, @Param("strCoffee") String coffee, @Param("strKind") String kind);
+			
+			
+	e. Mapper 
+	    - /src/main/resources/sqlmapper/CoffeeMenu.xml
+		
+			<!-- [SELECT] - 메뉴 검색 조건에 의한 조회(Search) - Map 사용 -->
+			<!-- id는 Dao의 메소드 이름: doSearch -->
+			<!-- List<Map<String, Object>> doSearch(String strStartDate, String strEndDate, String strCoffee, String strKind) -->
+			<select id="doSearch" resultType="map">
+				SELECT NO, coffee, kind, price,
+						DATE_FORMAT(reg_day, '%Y-%m-%d') AS reg_day,
+						DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
+				FROM coffee_menu
+				WHERE 1=1
+				AND reg_day >= DATE_FORMAT(#{strStartDate},'%Y%m%d')
+				AND reg_day &lt; DATE_ADD(DATE_FORMAT(#{strEndDate},'%Y%m%d'),INTERVAL +1 DAY) # +1일 한 이유는 2023-06-18 까지 나와야 하기 때문
+				<!-- MenuCon.java > @RequestParam(value = "coffee", defaultValue = "ALL") String strCoffee에서 defaultValue를 null 대신 적어줌 -->
+				<if test="strCoffee != 'ALL'">
+					AND coffee LIKE CONCAT(#{strCoffee}, '%')
+				</if>
+				<if test="strKind != 'ALL'">
+					AND kind = #{strKind}
+				</if>
+			</select>
+			 
+			 
+			<!-- [SELECT] - 메뉴 검색 조건에 의한 조회(Search) - Vo 사용 -->
+			<!-- id는 Dao의 메소드 이름: doSearch -->
+			<!-- List<Coffee_menu> doSearch(String strStartDate, String strEndDate, String strCoffee, String strKind) -->
+			<select id="doSearch" resultType="com.boot.sailing.vo.Coffee_menu">
+				SELECT NO, coffee, kind, price,
+						DATE_FORMAT(reg_day, '%Y-%m-%d') AS reg_day,
+						DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
+				FROM coffee_menu
+				WHERE 1=1
+				AND reg_day >= DATE_FORMAT(#{strStartDate},'%Y%m%d')
+				AND reg_day &lt; DATE_ADD(DATE_FORMAT(#{strEndDate},'%Y%m%d'),INTERVAL +1 DAY) # +1일 한 이유는 2023-06-18 까지 나와야 하기 때문
+				<!-- MenuCon.java > @RequestParam(value = "coffee", defaultValue = "ALL") String strCoffee에서 defaultValue를 null 대신 적어줌 -->
+				<if test="strCoffee != 'ALL'">
+					AND coffee LIKE CONCAT(#{strCoffee}, '%')
+				</if>
+				<if test="strKind != 'ALL'">
+					AND kind = #{strKind}
+				</if>
+			</select>
