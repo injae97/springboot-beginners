@@ -1,0 +1,7 @@
+version 1
+    - Map, List 사용 O (VO 사용 X)
+	- Map > Key Value > Map : Key 값이 정해지지 않은 자료구조
+
+version 2
+    - VO 사용 O (Map, List 사용 X)
+    - Map > Key Value > Vo: Key 값이 정해진 구조  
