@@ -45,12 +45,28 @@
         )
         COMMENT='주문내역'
         ;
+        
+        CREATE TABLE coffee_menu_log (
+            no INT(11) NOT NULL AUTO_INCREMENT,
+            coffee_no INT(11) NULL DEFAULT '0',
+            price INT(11) NULL DEFAULT '0',
+            reg_day DATETIME NULL DEFAULT current_timestamp(),
+            PRIMARY KEY (no)
+        )
+        COMMENT='커피로그'
+        ;
+
   
         * 외래키 설정(FK)
             - order_list 에서 외래키 > 추가 > 열: coffee_no(해당 컬럼에서 외래키로 지정할 컬럼), 참조 테이블: coffee_menu, 외래열(참조테이블에서 외래키로 지정할 것): no
             * 조인 할 때 해당 테이블의 기본키(PK) 와 조인 하고자 하는 외래키(FK) 조인
-                - 즉, coffee_menu에서 PK인 no 와 order_list의 FK인 coffe_no를 조인 
-                
+                - 즉, coffee_menu에서 PK인 no 와 order_list의 FK인 coffe_no를 조인     
+                    -- foreign key 생성
+                    ALTER TABLE order_list
+                    ADD CONSTRAINT fk_coffee_no
+                    FOREIGN KEY (coffee_no)
+                    REFERENCES coffee_menu(no);
+        
         * 유니크키 설정(UK)
             - 외래키를 2개이상 하면 어떤 것이 외래키인지 모르기 때문에 유니크키 설정
                 - cust_info 에서 cust_id 오른쪽 마우스 > 새 인덱스 생성 > UNIQUE KEY
