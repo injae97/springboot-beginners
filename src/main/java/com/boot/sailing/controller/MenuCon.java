@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -40,25 +41,22 @@ public class MenuCon {
 	}  
 	
     /*
-     * [INSERT] - 메뉴 등록 1 
-     * 화면 이동이기 때문에 @GetMapping 사용
-     * localhost:8080/menu_ins로 들어오면 /menu/menu_ins.html 화면을 보여줌
-     */
+	 * [INSERT] - 메뉴 등록 1 
+	 * 화면 이동이기 때문에 @GetMapping 사용
+	 * localhost:8080/menu_ins로 들어오면 /menu/menu_ins.html 화면을 보여줌
+	 */
 	@GetMapping("/menu_ins")
 	public String doInsert() {
 		return "/menu/menu_ins";
 	}
-	
-	/* [INSERT] - 메뉴 등록 2 */
+
+	/* [INSERT] - 메뉴 등록 2 - Vo 사용(ModelAttribute에 필요한 coffee, kind, price 들어감) */
 	@PostMapping("/menu_ins")
-	public String doInsertPost(
-			@RequestParam("coffee") String strCoffee, 
-			@RequestParam("kind") String strKind, 
-			@RequestParam("price") String strPrice )	
+	public String doInsertPost(@ModelAttribute Coffee_menu coffeeMenu)	
 	{
-        log.info("==========================================================");
-        log.info(strCoffee);
-		int intI = menuSvc.doInsert(strCoffee, strKind, strPrice);
+		log.info("==========================coffeeMenu================================");
+		log.info(coffeeMenu);
+		int intI = menuSvc.doInsert(coffeeMenu);
 		return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
 	}
 	
@@ -85,15 +83,11 @@ public class MenuCon {
 		return "/menu/menu_up"; 
 	}
 	
-	/* [UPDATE] - 메뉴 수정 */
+	/* [UPDATE] - 메뉴 수정 - Vo 사용 */
 	@PostMapping("/menu_up")
-	public String doUpdatePost(
-			@RequestParam("no") String strNo, 
-			@RequestParam("coffee") String strCoffee, 
-			@RequestParam("kind") String strKind, 
-			@RequestParam("price") String strPrice )	
+	public String doUpdatePost(Coffee_menu coffeeMenu)	
 	{
-		int intI = menuSvc.doUpdate(strNo, strCoffee, strKind, strPrice);
+		int intI = menuSvc.doUpdate(coffeeMenu);
 		return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
 	}
 	

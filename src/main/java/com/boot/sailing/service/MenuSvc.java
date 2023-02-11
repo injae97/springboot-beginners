@@ -71,10 +71,10 @@ public class MenuSvc {
 
 		return list;
 	}
-
-	/* [INSERT] - 메뉴 등록 */
-	public int doInsert(String strCoffee, String strKind, String strPrice) {
-		int intI = menuDao.doInsert(strCoffee, strKind, strPrice);
+	
+	/* [INSERT] - 메뉴 등록(Vo 사용) */
+	public int doInsert(Coffee_menu coffeeMenu) {
+		int intI = menuDao.doInsert(coffeeMenu);
 		return intI;
 	}
 
@@ -91,9 +91,9 @@ public class MenuSvc {
 		return map;
 	}
 
-	/* [UPDATE] - 메뉴 수정 */
-	public int doUpdate(String strNo, String strCoffee, String strKind, String strPrice) {
-		int intI = menuDao.doUpdate(strNo, strCoffee, strKind, strPrice);
+	/* [UPDATE] - 메뉴 수정(Vo 사용) */
+	public int doUpdate(Coffee_menu coffeeMenu) {
+		int intI = menuDao.doUpdate(coffeeMenu);
 		return intI;
 	}
 

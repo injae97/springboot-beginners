@@ -11,20 +11,20 @@ import com.boot.sailing.vo.Coffee_menu;
 @Mapper
 public interface MenuDao {
 
-	/* [SELECT] - 메뉴 전체 조회  */
+	/* [SELECT] - 메뉴 전체 조회(Vo 사용)  */
 	List<Coffee_menu> doList();
 	
-	/* [INSERT] - 메뉴 등록 */
-	int doInsert(@Param("strCoffee") String coffee, @Param("strKind")  String kind, @Param("strPrice")  String price);
+	/* [INSERT] - 메뉴 등록(Vo 사용) */
+	int doInsert(Coffee_menu coffeeMenu);
 
 	/* [DELETE] - 메뉴 삭제 */
 	int doDelete(String strNo);
 
 	/* [SELECT] - 수정 클릭 시 해당 데이터 값 호출(doListOne), UPDATE를 위한 용도 */
 	Map<String, Object> doListOne(String strNo);
-
-	/* [UPDATE] - 메뉴 수정 */
-	int doUpdate(@Param("strNo") String no, @Param("strCoffee") String coffee, @Param("strKind") String kind, @Param("strPrice") String price);
+	
+	/* [UPDATE] - 메뉴 수정(Vo 사용) */
+	int doUpdate(Coffee_menu coffeeMenu);
 
 	/* [SELECT] - 검색 기능(Search) */
 	List<Coffee_menu> doSearch(@Param("strStartDate") String start_date, @Param("strEndDate") String end_date, @Param("strCoffee") String coffee, @Param("strKind") String kind);
