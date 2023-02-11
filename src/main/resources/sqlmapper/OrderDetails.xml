@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<!-- namespace = Dao 위치 -->  
+<mapper namespace="com.boot.sailing.dao.OrderDao">
+
+	<!-- [SELECT] - 주문 내역 전체 조회 -->
+	<!-- id는 Dao의 메소드 이름: doList -->
+	<!-- List<Order_detail> doList(); 에서 type은 Vo -->
+    <select id="doList" resultType="com.boot.sailing.vo.Order_details">
+		SELECT NO, coffee_no, coffee, price, cust_id, NAME,
+		DATE_FORMAT(reg_day,'%Y.%m.%d') AS reg_day
+		FROM order_list
+	</select>
+
+</mapper>

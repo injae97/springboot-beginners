@@ -15,8 +15,10 @@
 	
 	    <div id="search" style="height: 150px;padding: 15px; font-size: small; width: 90%; margin-left: auto;  margin-right: auto;">
 	        <h3>[ Coffee Order List <span style="font-size:30px;">&#128722;</span> ]</h3>
-	
-	        <form name="fm_order" autocomplete="on">
+
+			<!-- Post 방식으로 받으며 action에 Controller Mapping 값으로 설정(/src/main/java/com/boot/sailing/controller/OrderCon.java) -->
+			<!-- name들은 데이터베이스에서 지정한 컬럼 값 그대로 사용해야 함 -->	
+	        <form name="fm_order" autocomplete="on" action="/order_search" method="post">
 	            <fieldset>
 	                <legend> [검색조건] </legend>
 	                <label>등록기간</label><input type="date" id="start_date" name="start_date" min="2020-01-01" max="2023-12-31">
@@ -32,11 +34,45 @@
 	
 	                <!-- <a href="javascript:loadDocArray()">test</a> -->
 	                <!--        <label>CheckBox : </label><span id="idCheckBox"></span>-->
-	            </fieldset>
+	      </fieldset>
 	
-	        </form>
-	    </div>
-	
+	    </form>
+	    
+          <script>
+			  /* 현재 시간 날짜에 적용시키기 */
+			  const now = new Date();	// 현재 날짜 및 시간
+			  const time7 = new Date(now.setDate(now.getDate() - 100));	// 기간 설정
+			  document.getElementById("start_date").value= time7.toISOString().slice(0,10);
+			  document.getElementById("end_date").value= new Date().toISOString().slice(0,10);
+			
+			  /* 가격 수정 */
+			  function onModify(){
+			    let _price = prompt("가격을 입력하세요");
+			
+				/* 취소를 누르면 값이 undefined 이므로 종료 */
+			    if(_price == undefined) {
+			        return;
+			    } 
+			    /* 가격을 입력 안하면 다시입력하라고 재호출 */
+			    else if(_price =="") {
+			        alert("가격을 입력하세요");
+			        onModify();
+			    } 
+			    /* 가격을 입력 했다면 저장 */
+			    else if(_price != "") {
+			        let _frm = document.formTable; // 만들어 놓은 form tag의 name 값!
+			       _frm.hidden_price.value = _price; // hidden tag에 값을 넣어줌
+			       _frm.submit();
+			    }
+			  }
+  		  </script>
+	  </div>
+	  
+	  
+	  
+        <!-- Post 방식으로 받으며 action에 Controller Mapping 값으로 설정(/src/main/java/com/boot/sailing/controller/OrderCon.java) -->
+	    <!-- name들은 데이터베이스에서 지정한 컬럼 값 그대로 사용해야 함 -->  	
+	    <form> name="formTable" id="IdFormTable" method="post" action="/order_updatePrice">
 	    <table class="table">
 	        <thead>
 	        <tr class="tr_td">
@@ -63,27 +99,21 @@
 	            <td>주문일자</td>
 	        </tr>
 	
-	        <tr class="tr_td">
-	            <td>Chk</td>
+	    <!-- OrderCon에 list에 넣은 값을 호출 -->
+	    <!-- Thymeleaf - for loop -->      
+	   		<tr th:each="prod : ${list}">
+	     	    <td><input type="checkbox" name="chkCoffeeNo" th:value="${prod.getNo()}"></td>
 	            <th>주문번호</th>
-	            <td>커피No</td>
-	            <td>메뉴명</td>
-	            <td>고객ID</td>
-	            <td>고객명</td>
-	            <td>주문일자</td>
-	        </tr>
-	
-	        <tr class="tr_td">
-	            <td>Chk</td>
-	            <th>주문번호</th>
-	            <td>커피No</td>
-	            <td>메뉴명</td>
-	            <td>고객ID</td>
-	            <td>고객명</td>
-	            <td>주문일자</td>
-	        </tr>
+	    	    <td th:text="${prod.getNo()}">커피No</th>
+	            <td th:text="${prod.getCoffee()}">메뉴명</td>
+	            <td th:text="${prod.getCust_id()}">고객ID</td>
+	            <td th:text="${prod.getName()}">고객명</td>
+    	        <td th:text="${prod.getReg_day()}">주문일자</td>
+	        </tr>	
+	                
 	        </tbody>
 	    </table>
+	  </form>
 	</div>
 
 <!-- 푸터 위치 -->

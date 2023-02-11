@@ -509,3 +509,238 @@
 				   price = CAST(#{price} as INTEGER)
 			   Where no = CAST(#{no} as INTEGER)
 		   </update> 
+		   
+		   
+		   
+		   
+## 💡 [SELECT] - 주문내역 전체 조회(Vo 사용)
+
+a. html 
+    a. /src/main/resources/templates/menu/order.html
+        - 주문내역 클릭 시 전체 조회
+			
+			<!-- 원본 -->
+			<!-- Post 방식으로 받으며 action에 Controller Mapping 값으로 설정(/src/main/java/com/boot/sailing/controller/OrderCon.java) -->
+			<!-- name들은 데이터베이스에서 지정한 컬럼 값 그대로 사용해야 함 -->
+			<form name="fm_member" autocomplete="on">
+			<fieldset>
+				<legend> [검색조건] </legend>
+				<label>등록기간</label><input type="date" id="start_date" name="start_date" min="2020-01-01" max="2023-12-31">
+				- <input type="date" id="end_date" name="end_date" min="2020-01-01" max="2023-12-31">
+				&nbsp;&nbsp;
+				<label>고객명</label> <input type="text" id="name" name="name">
+
+
+				&nbsp;&nbsp;<input type="submit" value="조회" style="width: 80px;height: 30px;font-weight: bold; font-size: medium">
+
+			</fieldset>
+
+			</form>
+		
+		
+			<!-- 수정본 -->	
+			<!-- Post 방식으로 받으며 action에 Controller Mapping 값으로 설정(/src/main/java/com/boot/sailing/controller/OrderCon.java) -->
+			<!-- name들은 데이터베이스에서 지정한 컬럼 값 그대로 사용해야 함 -->	
+			<form name="fm_order" autocomplete="on" action="/order_search" method="post">
+				<fieldset>
+					<legend> [검색조건] </legend>
+					<label>등록기간</label><input type="date" id="start_date" name="start_date" min="2020-01-01" max="2023-12-31">
+					- <input type="date" id="end_date" name="end_date" min="2020-01-01" max="2023-12-31">
+					&nbsp;&nbsp;
+					<label>메뉴명</label> <input type="text" id="menu" name="menu">
+					&nbsp;&nbsp;
+					<label>고객명</label> <input type="text" id="name" name="name">
+
+				</select>
+
+					&nbsp;&nbsp;<input type="submit" value="조회" style="width: 80px;height: 30px;font-weight: bold; font-size: medium">
+
+					<!-- <a href="javascript:loadDocArray()">test</a> -->
+					<!--        <label>CheckBox : </label><span id="idCheckBox"></span>-->
+			  </fieldset>
+
+			</form>
+		
+			<script>
+				  /* 현재 시간 날짜에 적용시키기 */
+				  const now = new Date();	// 현재 날짜 및 시간
+				  const time7 = new Date(now.setDate(now.getDate() - 100));	// 기간 설정
+				  document.getElementById("start_date").value= time7.toISOString().slice(0,10);
+				  document.getElementById("end_date").value= new Date().toISOString().slice(0,10);
+				
+				  /* 가격 수정 */
+				  function onModify(){
+					let _price = prompt("가격을 입력하세요");
+				
+					/* 취소를 누르면 값이 undefined 이므로 종료 */
+					if(_price == undefined) {
+						return;
+					} 
+					/* 가격을 입력 안하면 다시입력하라고 재호출 */
+					else if(_price =="") {
+						alert("가격을 입력하세요");
+						onModify();
+					} 
+					/* 가격을 입력 했다면 저장 */
+					else if(_price != "") {
+						let _frm = document.formTable; // 만들어 놓은 form tag의 name 값!
+					   _frm.hidden_price.value = _price; // hidden tag에 값을 넣어줌
+					   _frm.submit();
+					}
+				  }
+			</script>
+		
+		
+		
+		
+			<!-- 원본 -->
+			<!-- Post 방식으로 받으며 action에 Controller Mapping 값으로 설정(/src/main/java/com/boot/sailing/controller/OrderCon.java) -->
+			<!-- name들은 데이터베이스에서 지정한 컬럼 값 그대로 사용해야 함 -->  	
+			<table class="table">
+				<thead>
+				<tr class="tr_td">
+					<th>Chk</th>
+					<th>주문번호</th>
+					<th>커피No</th>
+					<th>메뉴명</th>
+					<th>고객ID</th>
+					<th>고객명</th>
+					<th>주문일자</th>
+				</tr>
+				</thead>
+			
+		
+			<!-- 수정본 -->	
+			<!-- Post 방식으로 받으며 action에 Controller Mapping 값으로 설정(/src/main/java/com/boot/sailing/controller/OrderCon.java) -->
+			<!-- name들은 데이터베이스에서 지정한 컬럼 값 그대로 사용해야 함 -->  	
+			<form name="formTable" id="IdFormTable" method="post" action="/order_updatePrice">
+			<table class="table">
+				<thead>
+				<tr class="tr_td">
+					<th>Chk</th>
+					<th>주문번호</th>
+					<th>커피No</th>
+					<th>메뉴명</th>
+					<th>고객ID</th>
+					<th>고객명</th>
+					<th>주문일자</th>
+				</tr>
+				</thead>
+		
+		
+				<tbody id="t_body">
+				<!--- 데이타 출력 부분 -->
+		
+				<!-- OrderCon에 list에 넣은 값을 호출 -->
+				<!-- Thymeleaf - for loop -->      
+					<tr th:each="prod : ${list}">
+						<td><input type="checkbox" name="chkCoffeeNo" th:value="${prod.getNo()}"></td>
+						<th>주문번호</th>
+						<td th:text="${prod.getNo()}">커피No</th>
+						<td th:text="${prod.getCoffee()}">메뉴명</td>
+						<td th:text="${prod.getCust_id()}">고객ID</td>
+						<td th:text="${prod.getName()}">고객명</td>
+						<td th:text="${prod.getReg_day()}">주문일자</td>
+					</tr>
+					</tbody>
+				</table>
+			  </form>
+			  
+	
+	b. Vo 생성
+	    - /src/main/java/com/boot/sailing/vo/Order_details.java
+		
+			@Data
+			public class Order_details {
+				
+				private String no;
+				private String coffee_no;
+				private String coffee;
+				private String price;
+				private String cust_id;
+				private String name;
+				private String reg_day;
+				
+			}
+			
+			* 데이터베이스 테이블 생성 시 사용한 컬럼들 선언해주면 된다
+	
+	
+	c. Controller
+	    - /src/main/java/com/boot/sailing/controller/OrderCon.java
+		
+			@Controller
+			public class OrderCon {
+				
+				@Autowired
+				OrderSvc orderSvc;
+				
+				/*
+				 * [SELECT] - 주문 내역 전체 조회 	
+				 * 해당 검색 결과만 받기 위하여 List<Order_details> - Vo 사용
+				 */
+				@GetMapping("/order")
+				public String doOrder(Model model) {
+
+					List<Order_details> list = orderSvc.doList();
+					model.addAttribute("list", list);
+					model.addAttribute("hello", "========== OrderCon - VO 사용 ==========");
+					return "/order/order"; 
+				}  
+			}
+	
+	
+	d. Service 
+	    - /src/main/java/com/boot/sailing/service/OrderSvc.java
+		
+			@Service 
+			@Log4j2
+			public class OrderSvc {
+				
+				@Autowired
+				OrderDao orderDao;
+				
+				/* [SELECT] - 주문 내역 전체 조회(Vo 사용)  */
+				public List<Order_details> doList() {
+					List<Order_details> list = orderDao.doList();
+					
+					log.info(list);
+					return list;
+				}
+			}
+			
+			
+	e. Dao
+	    - /src/main/java/com/boot/sailing/dao/OrderDao.java
+		
+			@Mapper
+			public interface OrderDao {
+
+				/* [SELECT] - 주문 내역 전체 조회(Vo 사용)  */
+				 List<Order_details> doList();
+			}
+			
+			* class가 아닌 interface로 Dao를 생성해야 한다.
+			
+	
+	f. Mapper
+	    - /src/main/resources/sqlmapper/OrderDetails.xml
+		
+			<?xml version="1.0" encoding="UTF-8" ?>
+			<!DOCTYPE mapper
+			  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+			  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+			  
+			<!-- namespace = Dao 위치 -->  
+			<mapper namespace="com.boot.sailing.dao.OrderDao">
+
+				<!-- [SELECT] - 주문 내역 전체 조회 -->
+				<!-- id는 Dao의 메소드 이름: doList -->
+				<!-- List<Order_detail> doList(); 에서 type은 Vo -->
+				<select id="doList" resultType="com.boot.sailing.vo.Order_details">
+					SELECT NO, coffee_no, coffee, price, cust_id, NAME,
+					DATE_FORMAT(reg_day,'%Y.%m.%d') AS reg_day
+					FROM order_list
+				</select>
+
+			</mapper>
