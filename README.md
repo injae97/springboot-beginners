@@ -1279,3 +1279,232 @@ e. Mapper
 					AND kind = #{strKind}
 				</if>
 			</select>
+			
+			
+## 💡 Map, List -> VO (menu_ins(등록) - Map / Vo로 정리)
+     
+    a. Vo class 생성
+	    - /src/main/java/com/boot/sailing/vo/Coffee_menu.java
+
+			@Data
+			public class Coffee_menu {
+
+				private String no;
+				private String coffee;
+				private String kind;
+				private String price;
+				private String reg_day;
+				private String mod_day;
+			}
+	
+	
+	b. Controller
+	    - /src/main/java/com/boot/sailing/controller/MenuCon.java
+
+			/*
+			 * [INSERT] - 메뉴 등록 1 
+			 * 화면 이동이기 때문에 @GetMapping 사용
+			 * localhost:8080/menu_ins로 들어오면 /menu/menu_ins.html 화면을 보여줌
+			 */
+			@GetMapping("/menu_ins")
+			public String doInsert() {
+				return "/menu/menu_ins";
+			}
+			
+			/* [INSERT] - 메뉴 등록 2 - Map 사용(@RequestParam을 통해 각 필요한 부분을 선언해줘야 함) */
+			@PostMapping("/menu_ins")
+			public String doInsertPost(
+					@RequestParam("coffee") String strCoffee, 
+					@RequestParam("kind") String strKind, 
+					@RequestParam("price") String strPrice )	
+			{
+				log.info("==========================================================");
+				log.info(strCoffee);
+				int intI = menuSvc.doInsert(strCoffee, strKind, strPrice);
+				return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
+			}
+		
+		
+		    /*
+			 * [INSERT] - 메뉴 등록 1 
+			 * 화면 이동이기 때문에 @GetMapping 사용
+			 * localhost:8080/menu_ins로 들어오면 /menu/menu_ins.html 화면을 보여줌
+			 */
+			@GetMapping("/menu_ins")
+			public String doInsert() {
+				return "/menu/menu_ins";
+			}
+		
+			/* [INSERT] - 메뉴 등록 2 - Vo 사용(ModelAttribute에 필요한 coffee, kind, price 들어감) */
+			@PostMapping("/menu_ins")
+			public String doInsertPost(@ModelAttribute Coffee_menu coffeeMenu)	
+			{
+				log.info("==========================coffeeMenu================================");
+				log.info(coffeeMenu);
+				int intI = menuSvc.doInsert(coffeeMenu);
+				return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
+			}
+		
+		
+	c. Service 
+	    - /src/main/java/com/boot/sailing/service/MenuSvc.java	
+		
+			/* [INSERT] - 메뉴 등록 - Map 사용 */
+			public int doInsert(String strCoffee, String strKind, String strPrice) {
+				int intI = menuDao.doInsert(strCoffee, strKind, strPrice);
+				return intI;
+			}
+		
+		
+			/* [INSERT] - 메뉴 등록 - Vo 사용 */
+			public int doInsert(Coffee_menu coffeeMenu) {
+				int intI = menuDao.doInsert(coffeeMenu);
+				return intI;
+			}
+		
+		
+	d. Dao
+	    - /src/main/java/com/boot/sailing/dao/MenuDao.java
+		
+			/* [INSERT] - 메뉴 등록 - Map 사용 */
+			int doInsert(@Param("strCoffee") String coffee, @Param("strKind")  String kind, @Param("strPrice")  String price);
+		
+		
+			/* [INSERT] - 메뉴 등록 - Vo 사용 */
+			int doInsert(Coffee_menu coffeeMenu);
+			
+			
+	e. Mapper 
+	    - /src/main/resources/sqlmapper/CoffeeMenu.xml
+		
+			<!-- [INSERT] - 메뉴 등록(Map 사용 - @RequestParam에 선언한 값들을 넣어줘야 함) -->
+			<!-- id는 Dao의 메소드 이름: doInsert -->
+			<insert id="doInsert">
+				INSERT INTO coffee_menu (coffee, kind, price)
+				VALUES(#{strCoffee}, #{strKind}, CAST(#{strPrice} as INTEGER))
+			</insert>
+			 
+			 
+			<!-- [INSERT] - 메뉴 등록(Vo 사용 - Vo에 넣은 객체들 그대로 사용) -->
+			<!-- id는 Dao의 메소드 이름: doInsert -->
+			<insert id="doInsert">
+				INSERT INTO coffee_menu (coffee, kind, price)
+				VALUES(#{coffee}, #{kind}, CAST(#{price} as INTEGER))
+			</insert>			 
+			
+		
+## 💡 Map, List -> VO (menu_up(수정) - Map / Vo로 정리)
+     
+    a. Vo class 생성
+	    - /src/main/java/com/boot/sailing/vo/Coffee_menu.java
+
+			@Data
+			public class Coffee_menu {
+
+				private String no;
+				private String coffee;
+				private String kind;
+				private String price;
+				private String reg_day;
+				private String mod_day;
+			}
+	
+	
+	b. Controller
+	    - /src/main/java/com/boot/sailing/controller/MenuCon.java
+
+			/* [SELECT] - 수정 클릭 시 해당 데이터 값 호출(doListOne), UPDATE를 위한 용도 */
+			@GetMapping("/menu_up")
+			public String doUpdate(Model model, @RequestParam("no") String strNo) {
+
+				Map<String, Object> map = menuSvc.doListOne(strNo);
+				
+				model.addAttribute("map", map);
+
+				return "/menu/menu_up"; 
+			}
+			
+			/* [UPDATE] - 메뉴 수정 - Map 사용*/
+			@PostMapping("/menu_up")
+			public String doUpdatePost(
+					@RequestParam("no") String strNo, 
+					@RequestParam("coffee") String strCoffee, 
+					@RequestParam("kind") String strKind, 
+					@RequestParam("price") String strPrice )	
+			{
+				int intI = menuSvc.doUpdate(strNo, strCoffee, strKind, strPrice);
+				return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
+			}
+			
+			
+			/* [SELECT] - 수정 클릭 시 해당 데이터 값 호출(doListOne), UPDATE를 위한 용도 */
+			@GetMapping("/menu_up")
+			public String doUpdate(Model model, @RequestParam("no") String strNo) {
+
+				Map<String, Object> map = menuSvc.doListOne(strNo);
+				
+				model.addAttribute("map", map);
+
+				return "/menu/menu_up"; 
+			}
+			
+			/* [UPDATE] - 메뉴 수정 - Vo 사용 */
+			@PostMapping("/menu_up")
+			public String doUpdatePost(Coffee_menu coffeeMenu)	
+			{
+				int intI = menuSvc.doUpdate(coffeeMenu);
+				return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
+			}
+
+
+	c. Service 
+	    - /src/main/java/com/boot/sailing/service/MenuSvc.java	
+		
+			/* [UPDATE] - 메뉴 수정 - Map 사용 */
+			public int doUpdate(String strNo, String strCoffee, String strKind, String strPrice) {
+				int intI = menuDao.doUpdate(strNo, strCoffee, strKind, strPrice);
+				return intI;
+			}
+		
+		
+			/* [UPDATE] - 메뉴 수정 - Vo 사용 */
+			public int doUpdate(Coffee_menu coffeeMenu) {
+				int intI = menuDao.doUpdate(coffeeMenu);
+				return intI;
+			}
+		
+		
+	d. Dao
+	    - /src/main/java/com/boot/sailing/dao/MenuDao.java
+		
+			/* [UPDATE] - 메뉴 수정 - Map 사용*/
+			int doUpdate(@Param("strNo") String no, @Param("strCoffee") String coffee, @Param("strKind") String kind, @Param("strPrice") String price);
+		
+		
+			/* [UPDATE] - 메뉴 수정 - Vo 사용 */
+			int doUpdate(Coffee_menu coffeeMenu);
+			
+			
+	e. Mapper 
+	    - /src/main/resources/sqlmapper/CoffeeMenu.xml
+		
+			<!-- [UPDATE] - 메뉴 수정(Map 사용 - @RequestParam에 선언한 값들을 넣어줘야 함)  --> 
+			<update id="doUpdate">
+			   Update coffee_menu
+			   Set
+				   coffee = #{strCoffee},
+				   kind = #{strKind},
+				   price = CAST(#{strPrice} as INTEGER)
+			   Where no = CAST(#{strNo} as INTEGER)
+		   </update>
+			 
+			 
+			<!-- [UPDATE] - 메뉴 수정(Vo 사용 - Vo에 넣은 객체들 그대로 사용) --> 
+			<update id="doUpdate">
+			   Update coffee_menu
+			   Set
+				   coffee = #{coffee},
+				   kind = #{kind},
+				   price = CAST(#{price} as INTEGER)
+			   Where no = CAST(#{no} as INTEGER)
+		   </update> 
