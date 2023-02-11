@@ -1513,8 +1513,8 @@ e. Mapper
 
 ## 💡 [SELECT] - 주문내역 전체 조회(Vo 사용)
 
-a. html 
-    a. /src/main/resources/templates/menu/order.html
+	a. html 
+        - /src/main/resources/templates/menu/order.html
         - 주문내역 클릭 시 전체 조회
 			
 			<!-- 원본 -->
