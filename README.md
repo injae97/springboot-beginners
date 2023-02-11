@@ -177,15 +177,15 @@ https://github.com/spring-projects/sts4/wiki/Previous-Versions
             - Controller(대문) > Service(Service에서 DAO 값을 가져옴) > DAO(DAO 내용이 Mybatis 통해 Mapper) 
                 * Controller 대문 역할을 하려면 @Autowired로 Service 값을 가져와야 한다.
                 
-				
+                
 ## 💡 Version1(Map, List) & Version2(Vo, DTO)
     a. Version1(Version1 디렉토리에 백업)
-	    - Map, List 사용
-	
-	b. Version2(현재 깃허브 Version2로 커밋)
-	    - Vo 사용				
-				
-				
+        - Map, List 사용
+    
+    b. Version2(현재 깃허브 Version2로 커밋)
+        - Vo 사용                
+                
+                
 ## 💡 [SELECT] - 메뉴 전체 조회 
 ```java
 a. html 
@@ -996,749 +996,749 @@ e. Mapper
             </foreach>
         </insert>
 ```
-	
+    
 ## 💡 Map, List -> VO (doList(조회) - Map / Vo로 정리)
      
     a. Vo class 생성
-	    - /src/main/java/com/boot/sailing/vo/Coffee_menu.java
+        - /src/main/java/com/boot/sailing/vo/Coffee_menu.java
 
-			@Data
-			public class Coffee_menu {
+            @Data
+            public class Coffee_menu {
 
-				private String no;
-				private String coffee;
-				private String kind;
-				private String price;
-				private String reg_day;
-				private String mod_day;
-			}
-	
-	
-	b. Controller
-	    - /src/main/java/com/boot/sailing/controller/MenuCon.java
-		
-			/*
-			 * [SELECT] - 메뉴 전체 조회 - Map 사용
-			 * 해당 검색 결과만 받기 위하여 List<Map<String, Object>>
-			 */
-			@GetMapping("/menu")
-			public String doMenu(Model model) {
+                private String no;
+                private String coffee;
+                private String kind;
+                private String price;
+                private String reg_day;
+                private String mod_day;
+            }
+    
+    
+    b. Controller
+        - /src/main/java/com/boot/sailing/controller/MenuCon.java
+        
+            /*
+             * [SELECT] - 메뉴 전체 조회 - Map 사용
+             * 해당 검색 결과만 받기 위하여 List<Map<String, Object>>
+             */
+            @GetMapping("/menu")
+            public String doMenu(Model model) {
 
-				List<Map<String, Object>> list = menuSvc.doList(); // List 사용
+                List<Map<String, Object>> list = menuSvc.doList(); // List 사용
 
-				model.addAttribute("list", list);
-				model.addAttribute("hello", "========== MenuCon ==========");
+                model.addAttribute("list", list);
+                model.addAttribute("hello", "========== MenuCon ==========");
 
-				return "/menu/menu"; 
-			}  
-		    
-			
-			/*
-			 * [SELECT] - 메뉴 전체 조회 	- Vo 사용
-			 * 해당 검색 결과만 받기 위하여 List<Coffee_menu>
-			 */
-			@GetMapping("/menu")
-			public String doMenu(Model model) {
+                return "/menu/menu"; 
+            }  
+            
+            
+            /*
+             * [SELECT] - 메뉴 전체 조회     - Vo 사용
+             * 해당 검색 결과만 받기 위하여 List<Coffee_menu>
+             */
+            @GetMapping("/menu")
+            public String doMenu(Model model) {
 
-				List<Coffee_menu> list = menuSvc.doList(); // Vo 사용
-				model.addAttribute("list", list);
-				model.addAttribute("hello", "========== MenuCon ==========");
-				
-				return "/menu/menu"; 
-			}  
-	
-	
-	c. Service 
-	    - /src/main/java/com/boot/sailing/service/MenuSvc.java	
-		
-			/* [SELECT] - 메뉴 전체 조회 - Map 사용 */
-			public List<Map<String, Object>> doList() {
+                List<Coffee_menu> list = menuSvc.doList(); // Vo 사용
+                model.addAttribute("list", list);
+                model.addAttribute("hello", "========== MenuCon ==========");
+                
+                return "/menu/menu"; 
+            }  
+    
+    
+    c. Service 
+        - /src/main/java/com/boot/sailing/service/MenuSvc.java    
+        
+            /* [SELECT] - 메뉴 전체 조회 - Map 사용 */
+            public List<Map<String, Object>> doList() {
 
-				List<Map<String, Object>> list = menuDao.doList();
-				
-				log.info(list);
-				return list;	
-			}
-		
-		
-			/* [SELECT] - 메뉴 전체 조회 - Vo 사용 */
-			public List<Coffee_menu> doList() {
+                List<Map<String, Object>> list = menuDao.doList();
+                
+                log.info(list);
+                return list;    
+            }
+        
+        
+            /* [SELECT] - 메뉴 전체 조회 - Vo 사용 */
+            public List<Coffee_menu> doList() {
 
-				List<Coffee_menu> list = menuDao.doList();
-				
-				log.info(list);
-				return list;	
-			}
-			
-			
-	d. Dao
-	    - /src/main/java/com/boot/sailing/dao/MenuDao.java
-		
-			/* [SELECT] - 메뉴 전체 조회 - Map 사용 */
-			List<Map<String, Object>> doList();
-		
-		
-			/* [SELECT] - 메뉴 전체 조회 - Vo 사용 */
-			List<Coffee_menu> doList();
-			
-			
-	e. Mapper 
-	    - /src/main/resources/sqlmapper/CoffeeMenu.xml
-		
-			<!-- [SELECT] - 메뉴 전체 조회 -->
-			<!-- id는 Dao의 메소드 이름: doList -->
-			<!-- resultType는 Dao의 type: Map -->
-			<!-- List<Map<String, Object>> doList(); 에서 type은 map -->
-			<select id="doList" resultType="map">
-				SELECT no, coffee, kind, price,
-					DATE_FORMAT(reg_day, '%Y-%m-%d') AS reg_day,
-					DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
-					FROM coffee_menu;
-			</select>
-			 
-			 
-			<!-- [SELECT] - 메뉴 전체 조회 -->
-			<!-- id는 Dao의 메소드 이름: doList -->
-			<!-- resultType는 Dao의 type: Vo -->
-			<!-- List<Coffee_menu> doList(); 에서 type은 Vo -->
-			<select id="doList" resultType="com.boot.sailing.vo.Coffee_menu">
-				SELECT no, coffee, kind, price,
-					DATE_FORMAT(reg_day, '%Y-%m-%d') AS reg_day,
-					DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
-					FROM coffee_menu;
-			</select>
-			
-			
-	f. View 
-	    - /Sailing/src/main/resources/templates/menu/menu.html
-		
-			<!--MenuCon에 list에 넣은 값을 호출 -->
-			<!-- Thymeleaf - for loop Map 사용 -->      
-			<tr th:each="prod : ${list}">
-			  <td><input type="checkBox" name="chkCoffeeNo" th:value="${prod.get('no')}"></td>
-			  <td th:text="${prod.get('no')}">커피No</th>
-			  <td th:text="${prod.get('coffee')}">메뉴명</td>
-			  <td th:text="${prod.get('kind')}">종류</td>
-			  <td th:text="${prod.get('price')}">가격</td>
-			  <td th:text="${prod.get('reg_day')}">등록일</td>
-			  <td th:text="${prod.get('mod_day')}">수정일</td>
-			  <td><a th:href="@{/menu_up(no=${prod.get('no')})}">수정</a></td>
-			  <td><a th:href="@{/menu_del(no=${prod.get('no')})}">삭제</a></td>
-			</tr>
-			
-			
-			<!--MenuCon에 list에 넣은 값을 호출 -->
-			<!-- Thymeleaf - for loop Vo 사용 -->      
-			<tr th:each="prod : ${list}">
-			  <td><input type="checkbox" name="chkCoffeeNo" th:value="${prod.getNo()}"></td>
-			  <td th:text="${prod.getNo()}">커피No</th>
-			  <td th:text="${prod.getCoffee()}">메뉴명</td>
-			  <td th:text="${prod.getKind()}">종류</td>
-			  <td th:text="${#numbers.formatInteger(prod.getPrice(),0,'COMMA')}">가격</td>
-			  <td th:text="${prod.getReg_day()}">등록일</td>
-			  <td th:text="${prod.getMod_day()}">수정일</td>
-			  <td><a th:href="@{menu_up(no=${prod.getNo()})}">수정</a></td>
-			  <td><a th:href="@{menu_del(no=${prod.getNo()})}">삭제</a></td>
-			</tr>
-			
-			* 매우중요 : 만약 제대로 Getter를 가져왔는데 에러가 발생한다면 mybatis map-underscore-to-camel-case이 true 확인(true -> false로 변경)
-			
+                List<Coffee_menu> list = menuDao.doList();
+                
+                log.info(list);
+                return list;    
+            }
+            
+            
+    d. Dao
+        - /src/main/java/com/boot/sailing/dao/MenuDao.java
+        
+            /* [SELECT] - 메뉴 전체 조회 - Map 사용 */
+            List<Map<String, Object>> doList();
+        
+        
+            /* [SELECT] - 메뉴 전체 조회 - Vo 사용 */
+            List<Coffee_menu> doList();
+            
+            
+    e. Mapper 
+        - /src/main/resources/sqlmapper/CoffeeMenu.xml
+        
+            <!-- [SELECT] - 메뉴 전체 조회 -->
+            <!-- id는 Dao의 메소드 이름: doList -->
+            <!-- resultType는 Dao의 type: Map -->
+            <!-- List<Map<String, Object>> doList(); 에서 type은 map -->
+            <select id="doList" resultType="map">
+                SELECT no, coffee, kind, price,
+                    DATE_FORMAT(reg_day, '%Y-%m-%d') AS reg_day,
+                    DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
+                    FROM coffee_menu;
+            </select>
+             
+             
+            <!-- [SELECT] - 메뉴 전체 조회 -->
+            <!-- id는 Dao의 메소드 이름: doList -->
+            <!-- resultType는 Dao의 type: Vo -->
+            <!-- List<Coffee_menu> doList(); 에서 type은 Vo -->
+            <select id="doList" resultType="com.boot.sailing.vo.Coffee_menu">
+                SELECT no, coffee, kind, price,
+                    DATE_FORMAT(reg_day, '%Y-%m-%d') AS reg_day,
+                    DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
+                    FROM coffee_menu;
+            </select>
+            
+            
+    f. View 
+        - /Sailing/src/main/resources/templates/menu/menu.html
+        
+            <!--MenuCon에 list에 넣은 값을 호출 -->
+            <!-- Thymeleaf - for loop Map 사용 -->      
+            <tr th:each="prod : ${list}">
+              <td><input type="checkBox" name="chkCoffeeNo" th:value="${prod.get('no')}"></td>
+              <td th:text="${prod.get('no')}">커피No</th>
+              <td th:text="${prod.get('coffee')}">메뉴명</td>
+              <td th:text="${prod.get('kind')}">종류</td>
+              <td th:text="${prod.get('price')}">가격</td>
+              <td th:text="${prod.get('reg_day')}">등록일</td>
+              <td th:text="${prod.get('mod_day')}">수정일</td>
+              <td><a th:href="@{/menu_up(no=${prod.get('no')})}">수정</a></td>
+              <td><a th:href="@{/menu_del(no=${prod.get('no')})}">삭제</a></td>
+            </tr>
+            
+            
+            <!--MenuCon에 list에 넣은 값을 호출 -->
+            <!-- Thymeleaf - for loop Vo 사용 -->      
+            <tr th:each="prod : ${list}">
+              <td><input type="checkbox" name="chkCoffeeNo" th:value="${prod.getNo()}"></td>
+              <td th:text="${prod.getNo()}">커피No</th>
+              <td th:text="${prod.getCoffee()}">메뉴명</td>
+              <td th:text="${prod.getKind()}">종류</td>
+              <td th:text="${#numbers.formatInteger(prod.getPrice(),0,'COMMA')}">가격</td>
+              <td th:text="${prod.getReg_day()}">등록일</td>
+              <td th:text="${prod.getMod_day()}">수정일</td>
+              <td><a th:href="@{menu_up(no=${prod.getNo()})}">수정</a></td>
+              <td><a th:href="@{menu_del(no=${prod.getNo()})}">삭제</a></td>
+            </tr>
+            
+            * 매우중요 : 만약 제대로 Getter를 가져왔는데 에러가 발생한다면 mybatis map-underscore-to-camel-case이 true 확인(true -> false로 변경)
+            
 
 ## 💡 Map, List -> VO (doSearch(검색) - Map / Vo로 정리)
      
     a. Vo class 생성
-	    - /src/main/java/com/boot/sailing/vo/Coffee_menu.java
+        - /src/main/java/com/boot/sailing/vo/Coffee_menu.java
 
-			@Data
-			public class Coffee_menu {
+            @Data
+            public class Coffee_menu {
 
-				private String no;
-				private String coffee;
-				private String kind;
-				private String price;
-				private String reg_day;
-				private String mod_day;
-			}
-	
-	
-	b. Controller
-	    - /src/main/java/com/boot/sailing/controller/MenuCon.java
+                private String no;
+                private String coffee;
+                private String kind;
+                private String price;
+                private String reg_day;
+                private String mod_day;
+            }
+    
+    
+    b. Controller
+        - /src/main/java/com/boot/sailing/controller/MenuCon.java
 
-			/*
-			 * [SELECT] - 검색 기능(Search) - Map 사용
-			 * 해당 검색 결과만 받기 위하여 List<Map<String, Object>> list 사용
-			 * Model model로 menu.html에 있는 <tr th:each="prod : ${list}">을 뿌려주기 위해 list로 넘겨줌
-			 */
-			@PostMapping("/menu_search")
-			public String doSearch(
-					@RequestParam("start_date") String strStartDate, 
-					@RequestParam("end_date") String strEndDate, 
-					@RequestParam(value = "coffee", defaultValue = "ALL") String strCoffee,  /* null이 올수 있는 경우에 defaultValue = "ALL"를 넣어주면 좋다. */
-					@RequestParam("kind") String strKind,
-					Model model)	
-			{
-				log.info("==========================================================");
-				log.info("start_date:" + strStartDate);
-				List<Map<String, Object>> list = menuSvc.doSearch(strStartDate, strEndDate, strCoffee, strKind);
-				model.addAttribute("list", list);
-				return "/menu/menu"; 
-			}
-		
-		
-			/*
-			 * [SELECT] - 검색 기능(Search) - Vo 사용
-			 * 해당 검색 결과만 받기 위하여 List<Coffee_menu> 
-			 * Model model로 menu.html에 있는 <tr th:each="prod : ${list}">을 뿌려주기 위해 list로 넘겨줌
-			 */
-			@PostMapping("/menu_search")
-			public String doSearch(
-					@RequestParam("start_date") String strStartDate, 
-					@RequestParam("end_date") String strEndDate, 
-					@RequestParam(value = "coffee", defaultValue = "ALL") String strCoffee,  /* null이 올수 있는 경우에 defaultValue = "ALL"를 넣어주면 좋다. */
-					@RequestParam("kind") String strKind,
-					Model model)	
-			{
-				log.info("==========================================================");
-				log.info("start_date:" + strStartDate);
-				List<Coffee_menu> list = menuSvc.doSearch(strStartDate, strEndDate, strCoffee, strKind);
-				model.addAttribute("list", list);
-				return "/menu/menu"; 
-			}
-		
-		
-	c. Service 
-	    - /src/main/java/com/boot/sailing/service/MenuSvc.java	
-		
-			/* [SELECT] - 검색 기능(Search) - Map 사용 */
-			public List<Map<String, Object>> doSearch(String strStartDate, String strEndDate, String strCoffee, String strKind) {
-				
-				List<Map<String, Object>> list = menuDao.doSearch(strStartDate, strEndDate, strCoffee, strKind);
-				return list;
-			}
-		
-		
-			/* [SELECT] - 메뉴 전체 조회 - Vo 사용 */
-			public List<Coffee_menu> doSearch(String strStartDate, String strEndDate, String strCoffee, String strKind) {
-				
-				List<Coffee_menu> list = menuDao.doSearch(strStartDate, strEndDate, strCoffee, strKind);
-				return list;
-			}
-		
-		
-	d. Dao
-	    - /src/main/java/com/boot/sailing/dao/MenuDao.java
-		
-			/* [SELECT] - 검색 기능(Search) - Map 사용 */
-			List<Map<String, Object>> doSearch(@Param("strStartDate") String start_date, @Param("strEndDate") String end_date, @Param("strCoffee") String coffee, @Param("strKind") String kind);
-			
-		
-			/* [SELECT] - 메뉴 전체 조회 - Vo 사용 */
-			List<Coffee_menu> doSearch(@Param("strStartDate") String start_date, @Param("strEndDate") String end_date, @Param("strCoffee") String coffee, @Param("strKind") String kind);
-			
-			
-	e. Mapper 
-	    - /src/main/resources/sqlmapper/CoffeeMenu.xml
-		
-			<!-- [SELECT] - 메뉴 검색 조건에 의한 조회(Search) - Map 사용 -->
-			<!-- id는 Dao의 메소드 이름: doSearch -->
-			<!-- List<Map<String, Object>> doSearch(String strStartDate, String strEndDate, String strCoffee, String strKind) -->
-			<select id="doSearch" resultType="map">
-				SELECT NO, coffee, kind, price,
-						DATE_FORMAT(reg_day, '%Y-%m-%d') AS reg_day,
-						DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
-				FROM coffee_menu
-				WHERE 1=1
-				AND reg_day >= DATE_FORMAT(#{strStartDate},'%Y%m%d')
-				AND reg_day &lt; DATE_ADD(DATE_FORMAT(#{strEndDate},'%Y%m%d'),INTERVAL +1 DAY) # +1일 한 이유는 2023-06-18 까지 나와야 하기 때문
-				<!-- MenuCon.java > @RequestParam(value = "coffee", defaultValue = "ALL") String strCoffee에서 defaultValue를 null 대신 적어줌 -->
-				<if test="strCoffee != 'ALL'">
-					AND coffee LIKE CONCAT(#{strCoffee}, '%')
-				</if>
-				<if test="strKind != 'ALL'">
-					AND kind = #{strKind}
-				</if>
-			</select>
-			 
-			 
-			<!-- [SELECT] - 메뉴 검색 조건에 의한 조회(Search) - Vo 사용 -->
-			<!-- id는 Dao의 메소드 이름: doSearch -->
-			<!-- List<Coffee_menu> doSearch(String strStartDate, String strEndDate, String strCoffee, String strKind) -->
-			<select id="doSearch" resultType="com.boot.sailing.vo.Coffee_menu">
-				SELECT NO, coffee, kind, price,
-						DATE_FORMAT(reg_day, '%Y-%m-%d') AS reg_day,
-						DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
-				FROM coffee_menu
-				WHERE 1=1
-				AND reg_day >= DATE_FORMAT(#{strStartDate},'%Y%m%d')
-				AND reg_day &lt; DATE_ADD(DATE_FORMAT(#{strEndDate},'%Y%m%d'),INTERVAL +1 DAY) # +1일 한 이유는 2023-06-18 까지 나와야 하기 때문
-				<!-- MenuCon.java > @RequestParam(value = "coffee", defaultValue = "ALL") String strCoffee에서 defaultValue를 null 대신 적어줌 -->
-				<if test="strCoffee != 'ALL'">
-					AND coffee LIKE CONCAT(#{strCoffee}, '%')
-				</if>
-				<if test="strKind != 'ALL'">
-					AND kind = #{strKind}
-				</if>
-			</select>
-			
-			
+            /*
+             * [SELECT] - 검색 기능(Search) - Map 사용
+             * 해당 검색 결과만 받기 위하여 List<Map<String, Object>> list 사용
+             * Model model로 menu.html에 있는 <tr th:each="prod : ${list}">을 뿌려주기 위해 list로 넘겨줌
+             */
+            @PostMapping("/menu_search")
+            public String doSearch(
+                    @RequestParam("start_date") String strStartDate, 
+                    @RequestParam("end_date") String strEndDate, 
+                    @RequestParam(value = "coffee", defaultValue = "ALL") String strCoffee,  /* null이 올수 있는 경우에 defaultValue = "ALL"를 넣어주면 좋다. */
+                    @RequestParam("kind") String strKind,
+                    Model model)    
+            {
+                log.info("==========================================================");
+                log.info("start_date:" + strStartDate);
+                List<Map<String, Object>> list = menuSvc.doSearch(strStartDate, strEndDate, strCoffee, strKind);
+                model.addAttribute("list", list);
+                return "/menu/menu"; 
+            }
+        
+        
+            /*
+             * [SELECT] - 검색 기능(Search) - Vo 사용
+             * 해당 검색 결과만 받기 위하여 List<Coffee_menu> 
+             * Model model로 menu.html에 있는 <tr th:each="prod : ${list}">을 뿌려주기 위해 list로 넘겨줌
+             */
+            @PostMapping("/menu_search")
+            public String doSearch(
+                    @RequestParam("start_date") String strStartDate, 
+                    @RequestParam("end_date") String strEndDate, 
+                    @RequestParam(value = "coffee", defaultValue = "ALL") String strCoffee,  /* null이 올수 있는 경우에 defaultValue = "ALL"를 넣어주면 좋다. */
+                    @RequestParam("kind") String strKind,
+                    Model model)    
+            {
+                log.info("==========================================================");
+                log.info("start_date:" + strStartDate);
+                List<Coffee_menu> list = menuSvc.doSearch(strStartDate, strEndDate, strCoffee, strKind);
+                model.addAttribute("list", list);
+                return "/menu/menu"; 
+            }
+        
+        
+    c. Service 
+        - /src/main/java/com/boot/sailing/service/MenuSvc.java    
+        
+            /* [SELECT] - 검색 기능(Search) - Map 사용 */
+            public List<Map<String, Object>> doSearch(String strStartDate, String strEndDate, String strCoffee, String strKind) {
+                
+                List<Map<String, Object>> list = menuDao.doSearch(strStartDate, strEndDate, strCoffee, strKind);
+                return list;
+            }
+        
+        
+            /* [SELECT] - 메뉴 전체 조회 - Vo 사용 */
+            public List<Coffee_menu> doSearch(String strStartDate, String strEndDate, String strCoffee, String strKind) {
+                
+                List<Coffee_menu> list = menuDao.doSearch(strStartDate, strEndDate, strCoffee, strKind);
+                return list;
+            }
+        
+        
+    d. Dao
+        - /src/main/java/com/boot/sailing/dao/MenuDao.java
+        
+            /* [SELECT] - 검색 기능(Search) - Map 사용 */
+            List<Map<String, Object>> doSearch(@Param("strStartDate") String start_date, @Param("strEndDate") String end_date, @Param("strCoffee") String coffee, @Param("strKind") String kind);
+            
+        
+            /* [SELECT] - 메뉴 전체 조회 - Vo 사용 */
+            List<Coffee_menu> doSearch(@Param("strStartDate") String start_date, @Param("strEndDate") String end_date, @Param("strCoffee") String coffee, @Param("strKind") String kind);
+            
+            
+    e. Mapper 
+        - /src/main/resources/sqlmapper/CoffeeMenu.xml
+        
+            <!-- [SELECT] - 메뉴 검색 조건에 의한 조회(Search) - Map 사용 -->
+            <!-- id는 Dao의 메소드 이름: doSearch -->
+            <!-- List<Map<String, Object>> doSearch(String strStartDate, String strEndDate, String strCoffee, String strKind) -->
+            <select id="doSearch" resultType="map">
+                SELECT NO, coffee, kind, price,
+                        DATE_FORMAT(reg_day, '%Y-%m-%d') AS reg_day,
+                        DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
+                FROM coffee_menu
+                WHERE 1=1
+                AND reg_day >= DATE_FORMAT(#{strStartDate},'%Y%m%d')
+                AND reg_day &lt; DATE_ADD(DATE_FORMAT(#{strEndDate},'%Y%m%d'),INTERVAL +1 DAY) # +1일 한 이유는 2023-06-18 까지 나와야 하기 때문
+                <!-- MenuCon.java > @RequestParam(value = "coffee", defaultValue = "ALL") String strCoffee에서 defaultValue를 null 대신 적어줌 -->
+                <if test="strCoffee != 'ALL'">
+                    AND coffee LIKE CONCAT(#{strCoffee}, '%')
+                </if>
+                <if test="strKind != 'ALL'">
+                    AND kind = #{strKind}
+                </if>
+            </select>
+             
+             
+            <!-- [SELECT] - 메뉴 검색 조건에 의한 조회(Search) - Vo 사용 -->
+            <!-- id는 Dao의 메소드 이름: doSearch -->
+            <!-- List<Coffee_menu> doSearch(String strStartDate, String strEndDate, String strCoffee, String strKind) -->
+            <select id="doSearch" resultType="com.boot.sailing.vo.Coffee_menu">
+                SELECT NO, coffee, kind, price,
+                        DATE_FORMAT(reg_day, '%Y-%m-%d') AS reg_day,
+                        DATE_FORMAT(mod_day, '%Y-%m-%d') AS mod_day
+                FROM coffee_menu
+                WHERE 1=1
+                AND reg_day >= DATE_FORMAT(#{strStartDate},'%Y%m%d')
+                AND reg_day &lt; DATE_ADD(DATE_FORMAT(#{strEndDate},'%Y%m%d'),INTERVAL +1 DAY) # +1일 한 이유는 2023-06-18 까지 나와야 하기 때문
+                <!-- MenuCon.java > @RequestParam(value = "coffee", defaultValue = "ALL") String strCoffee에서 defaultValue를 null 대신 적어줌 -->
+                <if test="strCoffee != 'ALL'">
+                    AND coffee LIKE CONCAT(#{strCoffee}, '%')
+                </if>
+                <if test="strKind != 'ALL'">
+                    AND kind = #{strKind}
+                </if>
+            </select>
+            
+            
 ## 💡 Map, List -> VO (menu_ins(등록) - Map / Vo로 정리)
      
     a. Vo class 생성
-	    - /src/main/java/com/boot/sailing/vo/Coffee_menu.java
+        - /src/main/java/com/boot/sailing/vo/Coffee_menu.java
 
-			@Data
-			public class Coffee_menu {
+            @Data
+            public class Coffee_menu {
 
-				private String no;
-				private String coffee;
-				private String kind;
-				private String price;
-				private String reg_day;
-				private String mod_day;
-			}
-	
-	
-	b. Controller
-	    - /src/main/java/com/boot/sailing/controller/MenuCon.java
+                private String no;
+                private String coffee;
+                private String kind;
+                private String price;
+                private String reg_day;
+                private String mod_day;
+            }
+    
+    
+    b. Controller
+        - /src/main/java/com/boot/sailing/controller/MenuCon.java
 
-			/*
-			 * [INSERT] - 메뉴 등록 1 
-			 * 화면 이동이기 때문에 @GetMapping 사용
-			 * localhost:8080/menu_ins로 들어오면 /menu/menu_ins.html 화면을 보여줌
-			 */
-			@GetMapping("/menu_ins")
-			public String doInsert() {
-				return "/menu/menu_ins";
-			}
-			
-			/* [INSERT] - 메뉴 등록 2 - Map 사용(@RequestParam을 통해 각 필요한 부분을 선언해줘야 함) */
-			@PostMapping("/menu_ins")
-			public String doInsertPost(
-					@RequestParam("coffee") String strCoffee, 
-					@RequestParam("kind") String strKind, 
-					@RequestParam("price") String strPrice )	
-			{
-				log.info("==========================================================");
-				log.info(strCoffee);
-				int intI = menuSvc.doInsert(strCoffee, strKind, strPrice);
-				return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
-			}
-		
-		
-		    /*
-			 * [INSERT] - 메뉴 등록 1 
-			 * 화면 이동이기 때문에 @GetMapping 사용
-			 * localhost:8080/menu_ins로 들어오면 /menu/menu_ins.html 화면을 보여줌
-			 */
-			@GetMapping("/menu_ins")
-			public String doInsert() {
-				return "/menu/menu_ins";
-			}
-		
-			/* [INSERT] - 메뉴 등록 2 - Vo 사용(ModelAttribute에 필요한 coffee, kind, price 들어감) */
-			@PostMapping("/menu_ins")
-			public String doInsertPost(@ModelAttribute Coffee_menu coffeeMenu)	
-			{
-				log.info("==========================coffeeMenu================================");
-				log.info(coffeeMenu);
-				int intI = menuSvc.doInsert(coffeeMenu);
-				return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
-			}
-		
-		
-	c. Service 
-	    - /src/main/java/com/boot/sailing/service/MenuSvc.java	
-		
-			/* [INSERT] - 메뉴 등록 - Map 사용 */
-			public int doInsert(String strCoffee, String strKind, String strPrice) {
-				int intI = menuDao.doInsert(strCoffee, strKind, strPrice);
-				return intI;
-			}
-		
-		
-			/* [INSERT] - 메뉴 등록 - Vo 사용 */
-			public int doInsert(Coffee_menu coffeeMenu) {
-				int intI = menuDao.doInsert(coffeeMenu);
-				return intI;
-			}
-		
-		
-	d. Dao
-	    - /src/main/java/com/boot/sailing/dao/MenuDao.java
-		
-			/* [INSERT] - 메뉴 등록 - Map 사용 */
-			int doInsert(@Param("strCoffee") String coffee, @Param("strKind")  String kind, @Param("strPrice")  String price);
-		
-		
-			/* [INSERT] - 메뉴 등록 - Vo 사용 */
-			int doInsert(Coffee_menu coffeeMenu);
-			
-			
-	e. Mapper 
-	    - /src/main/resources/sqlmapper/CoffeeMenu.xml
-		
-			<!-- [INSERT] - 메뉴 등록(Map 사용 - @RequestParam에 선언한 값들을 넣어줘야 함) -->
-			<!-- id는 Dao의 메소드 이름: doInsert -->
-			<insert id="doInsert">
-				INSERT INTO coffee_menu (coffee, kind, price)
-				VALUES(#{strCoffee}, #{strKind}, CAST(#{strPrice} as INTEGER))
-			</insert>
-			 
-			 
-			<!-- [INSERT] - 메뉴 등록(Vo 사용 - Vo에 넣은 객체들 그대로 사용) -->
-			<!-- id는 Dao의 메소드 이름: doInsert -->
-			<insert id="doInsert">
-				INSERT INTO coffee_menu (coffee, kind, price)
-				VALUES(#{coffee}, #{kind}, CAST(#{price} as INTEGER))
-			</insert>			 
-			
-		
+            /*
+             * [INSERT] - 메뉴 등록 1 
+             * 화면 이동이기 때문에 @GetMapping 사용
+             * localhost:8080/menu_ins로 들어오면 /menu/menu_ins.html 화면을 보여줌
+             */
+            @GetMapping("/menu_ins")
+            public String doInsert() {
+                return "/menu/menu_ins";
+            }
+            
+            /* [INSERT] - 메뉴 등록 2 - Map 사용(@RequestParam을 통해 각 필요한 부분을 선언해줘야 함) */
+            @PostMapping("/menu_ins")
+            public String doInsertPost(
+                    @RequestParam("coffee") String strCoffee, 
+                    @RequestParam("kind") String strKind, 
+                    @RequestParam("price") String strPrice )    
+            {
+                log.info("==========================================================");
+                log.info(strCoffee);
+                int intI = menuSvc.doInsert(strCoffee, strKind, strPrice);
+                return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
+            }
+        
+        
+            /*
+             * [INSERT] - 메뉴 등록 1 
+             * 화면 이동이기 때문에 @GetMapping 사용
+             * localhost:8080/menu_ins로 들어오면 /menu/menu_ins.html 화면을 보여줌
+             */
+            @GetMapping("/menu_ins")
+            public String doInsert() {
+                return "/menu/menu_ins";
+            }
+        
+            /* [INSERT] - 메뉴 등록 2 - Vo 사용(ModelAttribute에 필요한 coffee, kind, price 들어감) */
+            @PostMapping("/menu_ins")
+            public String doInsertPost(@ModelAttribute Coffee_menu coffeeMenu)    
+            {
+                log.info("==========================coffeeMenu================================");
+                log.info(coffeeMenu);
+                int intI = menuSvc.doInsert(coffeeMenu);
+                return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
+            }
+        
+        
+    c. Service 
+        - /src/main/java/com/boot/sailing/service/MenuSvc.java    
+        
+            /* [INSERT] - 메뉴 등록 - Map 사용 */
+            public int doInsert(String strCoffee, String strKind, String strPrice) {
+                int intI = menuDao.doInsert(strCoffee, strKind, strPrice);
+                return intI;
+            }
+        
+        
+            /* [INSERT] - 메뉴 등록 - Vo 사용 */
+            public int doInsert(Coffee_menu coffeeMenu) {
+                int intI = menuDao.doInsert(coffeeMenu);
+                return intI;
+            }
+        
+        
+    d. Dao
+        - /src/main/java/com/boot/sailing/dao/MenuDao.java
+        
+            /* [INSERT] - 메뉴 등록 - Map 사용 */
+            int doInsert(@Param("strCoffee") String coffee, @Param("strKind")  String kind, @Param("strPrice")  String price);
+        
+        
+            /* [INSERT] - 메뉴 등록 - Vo 사용 */
+            int doInsert(Coffee_menu coffeeMenu);
+            
+            
+    e. Mapper 
+        - /src/main/resources/sqlmapper/CoffeeMenu.xml
+        
+            <!-- [INSERT] - 메뉴 등록(Map 사용 - @RequestParam에 선언한 값들을 넣어줘야 함) -->
+            <!-- id는 Dao의 메소드 이름: doInsert -->
+            <insert id="doInsert">
+                INSERT INTO coffee_menu (coffee, kind, price)
+                VALUES(#{strCoffee}, #{strKind}, CAST(#{strPrice} as INTEGER))
+            </insert>
+             
+             
+            <!-- [INSERT] - 메뉴 등록(Vo 사용 - Vo에 넣은 객체들 그대로 사용) -->
+            <!-- id는 Dao의 메소드 이름: doInsert -->
+            <insert id="doInsert">
+                INSERT INTO coffee_menu (coffee, kind, price)
+                VALUES(#{coffee}, #{kind}, CAST(#{price} as INTEGER))
+            </insert>             
+            
+        
 ## 💡 Map, List -> VO (menu_up(수정) - Map / Vo로 정리)
      
     a. Vo class 생성
-	    - /src/main/java/com/boot/sailing/vo/Coffee_menu.java
+        - /src/main/java/com/boot/sailing/vo/Coffee_menu.java
 
-			@Data
-			public class Coffee_menu {
+            @Data
+            public class Coffee_menu {
 
-				private String no;
-				private String coffee;
-				private String kind;
-				private String price;
-				private String reg_day;
-				private String mod_day;
-			}
-	
-	
-	b. Controller
-	    - /src/main/java/com/boot/sailing/controller/MenuCon.java
+                private String no;
+                private String coffee;
+                private String kind;
+                private String price;
+                private String reg_day;
+                private String mod_day;
+            }
+    
+    
+    b. Controller
+        - /src/main/java/com/boot/sailing/controller/MenuCon.java
 
-			/* [SELECT] - 수정 클릭 시 해당 데이터 값 호출(doListOne), UPDATE를 위한 용도 */
-			@GetMapping("/menu_up")
-			public String doUpdate(Model model, @RequestParam("no") String strNo) {
+            /* [SELECT] - 수정 클릭 시 해당 데이터 값 호출(doListOne), UPDATE를 위한 용도 */
+            @GetMapping("/menu_up")
+            public String doUpdate(Model model, @RequestParam("no") String strNo) {
 
-				Map<String, Object> map = menuSvc.doListOne(strNo);
-				
-				model.addAttribute("map", map);
+                Map<String, Object> map = menuSvc.doListOne(strNo);
+                
+                model.addAttribute("map", map);
 
-				return "/menu/menu_up"; 
-			}
-			
-			/* [UPDATE] - 메뉴 수정 - Map 사용*/
-			@PostMapping("/menu_up")
-			public String doUpdatePost(
-					@RequestParam("no") String strNo, 
-					@RequestParam("coffee") String strCoffee, 
-					@RequestParam("kind") String strKind, 
-					@RequestParam("price") String strPrice )	
-			{
-				int intI = menuSvc.doUpdate(strNo, strCoffee, strKind, strPrice);
-				return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
-			}
-			
-			
-			/* [SELECT] - 수정 클릭 시 해당 데이터 값 호출(doListOne), UPDATE를 위한 용도 */
-			@GetMapping("/menu_up")
-			public String doUpdate(Model model, @RequestParam("no") String strNo) {
+                return "/menu/menu_up"; 
+            }
+            
+            /* [UPDATE] - 메뉴 수정 - Map 사용*/
+            @PostMapping("/menu_up")
+            public String doUpdatePost(
+                    @RequestParam("no") String strNo, 
+                    @RequestParam("coffee") String strCoffee, 
+                    @RequestParam("kind") String strKind, 
+                    @RequestParam("price") String strPrice )    
+            {
+                int intI = menuSvc.doUpdate(strNo, strCoffee, strKind, strPrice);
+                return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
+            }
+            
+            
+            /* [SELECT] - 수정 클릭 시 해당 데이터 값 호출(doListOne), UPDATE를 위한 용도 */
+            @GetMapping("/menu_up")
+            public String doUpdate(Model model, @RequestParam("no") String strNo) {
 
-				Map<String, Object> map = menuSvc.doListOne(strNo);
-				
-				model.addAttribute("map", map);
+                Map<String, Object> map = menuSvc.doListOne(strNo);
+                
+                model.addAttribute("map", map);
 
-				return "/menu/menu_up"; 
-			}
-			
-			/* [UPDATE] - 메뉴 수정 - Vo 사용 */
-			@PostMapping("/menu_up")
-			public String doUpdatePost(Coffee_menu coffeeMenu)	
-			{
-				int intI = menuSvc.doUpdate(coffeeMenu);
-				return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
-			}
+                return "/menu/menu_up"; 
+            }
+            
+            /* [UPDATE] - 메뉴 수정 - Vo 사용 */
+            @PostMapping("/menu_up")
+            public String doUpdatePost(Coffee_menu coffeeMenu)    
+            {
+                int intI = menuSvc.doUpdate(coffeeMenu);
+                return "redirect:/menu"; // return은 @RequestMapping이 적용되지 않는다.
+            }
 
 
-	c. Service 
-	    - /src/main/java/com/boot/sailing/service/MenuSvc.java	
-		
-			/* [UPDATE] - 메뉴 수정 - Map 사용 */
-			public int doUpdate(String strNo, String strCoffee, String strKind, String strPrice) {
-				int intI = menuDao.doUpdate(strNo, strCoffee, strKind, strPrice);
-				return intI;
-			}
-		
-		
-			/* [UPDATE] - 메뉴 수정 - Vo 사용 */
-			public int doUpdate(Coffee_menu coffeeMenu) {
-				int intI = menuDao.doUpdate(coffeeMenu);
-				return intI;
-			}
-		
-		
-	d. Dao
-	    - /src/main/java/com/boot/sailing/dao/MenuDao.java
-		
-			/* [UPDATE] - 메뉴 수정 - Map 사용*/
-			int doUpdate(@Param("strNo") String no, @Param("strCoffee") String coffee, @Param("strKind") String kind, @Param("strPrice") String price);
-		
-		
-			/* [UPDATE] - 메뉴 수정 - Vo 사용 */
-			int doUpdate(Coffee_menu coffeeMenu);
-			
-			
-	e. Mapper 
-	    - /src/main/resources/sqlmapper/CoffeeMenu.xml
-		
-			<!-- [UPDATE] - 메뉴 수정(Map 사용 - @RequestParam에 선언한 값들을 넣어줘야 함)  --> 
-			<update id="doUpdate">
-			   Update coffee_menu
-			   Set
-				   coffee = #{strCoffee},
-				   kind = #{strKind},
-				   price = CAST(#{strPrice} as INTEGER)
-			   Where no = CAST(#{strNo} as INTEGER)
-		   </update>
-			 
-			 
-			<!-- [UPDATE] - 메뉴 수정(Vo 사용 - Vo에 넣은 객체들 그대로 사용) --> 
-			<update id="doUpdate">
-			   Update coffee_menu
-			   Set
-				   coffee = #{coffee},
-				   kind = #{kind},
-				   price = CAST(#{price} as INTEGER)
-			   Where no = CAST(#{no} as INTEGER)
-		   </update> 
-		   
-		   
+    c. Service 
+        - /src/main/java/com/boot/sailing/service/MenuSvc.java    
+        
+            /* [UPDATE] - 메뉴 수정 - Map 사용 */
+            public int doUpdate(String strNo, String strCoffee, String strKind, String strPrice) {
+                int intI = menuDao.doUpdate(strNo, strCoffee, strKind, strPrice);
+                return intI;
+            }
+        
+        
+            /* [UPDATE] - 메뉴 수정 - Vo 사용 */
+            public int doUpdate(Coffee_menu coffeeMenu) {
+                int intI = menuDao.doUpdate(coffeeMenu);
+                return intI;
+            }
+        
+        
+    d. Dao
+        - /src/main/java/com/boot/sailing/dao/MenuDao.java
+        
+            /* [UPDATE] - 메뉴 수정 - Map 사용*/
+            int doUpdate(@Param("strNo") String no, @Param("strCoffee") String coffee, @Param("strKind") String kind, @Param("strPrice") String price);
+        
+        
+            /* [UPDATE] - 메뉴 수정 - Vo 사용 */
+            int doUpdate(Coffee_menu coffeeMenu);
+            
+            
+    e. Mapper 
+        - /src/main/resources/sqlmapper/CoffeeMenu.xml
+        
+            <!-- [UPDATE] - 메뉴 수정(Map 사용 - @RequestParam에 선언한 값들을 넣어줘야 함)  --> 
+            <update id="doUpdate">
+               Update coffee_menu
+               Set
+                   coffee = #{strCoffee},
+                   kind = #{strKind},
+                   price = CAST(#{strPrice} as INTEGER)
+               Where no = CAST(#{strNo} as INTEGER)
+           </update>
+             
+             
+            <!-- [UPDATE] - 메뉴 수정(Vo 사용 - Vo에 넣은 객체들 그대로 사용) --> 
+            <update id="doUpdate">
+               Update coffee_menu
+               Set
+                   coffee = #{coffee},
+                   kind = #{kind},
+                   price = CAST(#{price} as INTEGER)
+               Where no = CAST(#{no} as INTEGER)
+           </update> 
+           
+           
 
 ## 💡 [SELECT] - 주문내역 전체 조회(Vo 사용)
 
-	a. html 
+    a. html 
         - /src/main/resources/templates/menu/order.html
         - 주문내역 클릭 시 전체 조회
-			
-			<!-- 원본 -->
-			<!-- Post 방식으로 받으며 action에 Controller Mapping 값으로 설정(/src/main/java/com/boot/sailing/controller/OrderCon.java) -->
-			<!-- name들은 데이터베이스에서 지정한 컬럼 값 그대로 사용해야 함 -->
-			<form name="fm_member" autocomplete="on">
-			<fieldset>
-				<legend> [검색조건] </legend>
-				<label>등록기간</label><input type="date" id="start_date" name="start_date" min="2020-01-01" max="2023-12-31">
-				- <input type="date" id="end_date" name="end_date" min="2020-01-01" max="2023-12-31">
-				&nbsp;&nbsp;
-				<label>고객명</label> <input type="text" id="name" name="name">
+            
+            <!-- 원본 -->
+            <!-- Post 방식으로 받으며 action에 Controller Mapping 값으로 설정(/src/main/java/com/boot/sailing/controller/OrderCon.java) -->
+            <!-- name들은 데이터베이스에서 지정한 컬럼 값 그대로 사용해야 함 -->
+            <form name="fm_member" autocomplete="on">
+            <fieldset>
+                <legend> [검색조건] </legend>
+                <label>등록기간</label><input type="date" id="start_date" name="start_date" min="2020-01-01" max="2023-12-31">
+                - <input type="date" id="end_date" name="end_date" min="2020-01-01" max="2023-12-31">
+                &nbsp;&nbsp;
+                <label>고객명</label> <input type="text" id="name" name="name">
 
 
-				&nbsp;&nbsp;<input type="submit" value="조회" style="width: 80px;height: 30px;font-weight: bold; font-size: medium">
+                &nbsp;&nbsp;<input type="submit" value="조회" style="width: 80px;height: 30px;font-weight: bold; font-size: medium">
 
-			</fieldset>
+            </fieldset>
 
-			</form>
-		
-		
-			<!-- 수정본 -->	
-			<!-- Post 방식으로 받으며 action에 Controller Mapping 값으로 설정(/src/main/java/com/boot/sailing/controller/OrderCon.java) -->
-			<!-- name들은 데이터베이스에서 지정한 컬럼 값 그대로 사용해야 함 -->	
-			<form name="fm_order" autocomplete="on" action="/order_search" method="post">
-				<fieldset>
-					<legend> [검색조건] </legend>
-					<label>등록기간</label><input type="date" id="start_date" name="start_date" min="2020-01-01" max="2023-12-31">
-					- <input type="date" id="end_date" name="end_date" min="2020-01-01" max="2023-12-31">
-					&nbsp;&nbsp;
-					<label>메뉴명</label> <input type="text" id="menu" name="menu">
-					&nbsp;&nbsp;
-					<label>고객명</label> <input type="text" id="name" name="name">
+            </form>
+        
+        
+            <!-- 수정본 -->    
+            <!-- Post 방식으로 받으며 action에 Controller Mapping 값으로 설정(/src/main/java/com/boot/sailing/controller/OrderCon.java) -->
+            <!-- name들은 데이터베이스에서 지정한 컬럼 값 그대로 사용해야 함 -->    
+            <form name="fm_order" autocomplete="on" action="/order_search" method="post">
+                <fieldset>
+                    <legend> [검색조건] </legend>
+                    <label>등록기간</label><input type="date" id="start_date" name="start_date" min="2020-01-01" max="2023-12-31">
+                    - <input type="date" id="end_date" name="end_date" min="2020-01-01" max="2023-12-31">
+                    &nbsp;&nbsp;
+                    <label>메뉴명</label> <input type="text" id="menu" name="menu">
+                    &nbsp;&nbsp;
+                    <label>고객명</label> <input type="text" id="name" name="name">
 
-				</select>
+                </select>
 
-					&nbsp;&nbsp;<input type="submit" value="조회" style="width: 80px;height: 30px;font-weight: bold; font-size: medium">
+                    &nbsp;&nbsp;<input type="submit" value="조회" style="width: 80px;height: 30px;font-weight: bold; font-size: medium">
 
-					<!-- <a href="javascript:loadDocArray()">test</a> -->
-					<!--        <label>CheckBox : </label><span id="idCheckBox"></span>-->
-			  </fieldset>
+                    <!-- <a href="javascript:loadDocArray()">test</a> -->
+                    <!--        <label>CheckBox : </label><span id="idCheckBox"></span>-->
+              </fieldset>
 
-			</form>
-		
-			<script>
-				  /* 현재 시간 날짜에 적용시키기 */
-				  const now = new Date();	// 현재 날짜 및 시간
-				  const time7 = new Date(now.setDate(now.getDate() - 100));	// 기간 설정
-				  document.getElementById("start_date").value= time7.toISOString().slice(0,10);
-				  document.getElementById("end_date").value= new Date().toISOString().slice(0,10);
-				
-				  /* 가격 수정 */
-				  function onModify(){
-					let _price = prompt("가격을 입력하세요");
-				
-					/* 취소를 누르면 값이 undefined 이므로 종료 */
-					if(_price == undefined) {
-						return;
-					} 
-					/* 가격을 입력 안하면 다시입력하라고 재호출 */
-					else if(_price =="") {
-						alert("가격을 입력하세요");
-						onModify();
-					} 
-					/* 가격을 입력 했다면 저장 */
-					else if(_price != "") {
-						let _frm = document.formTable; // 만들어 놓은 form tag의 name 값!
-					   _frm.hidden_price.value = _price; // hidden tag에 값을 넣어줌
-					   _frm.submit();
-					}
-				  }
-			</script>
-		
-		
-		
-		
-			<!-- 원본 -->
-			<!-- Post 방식으로 받으며 action에 Controller Mapping 값으로 설정(/src/main/java/com/boot/sailing/controller/OrderCon.java) -->
-			<!-- name들은 데이터베이스에서 지정한 컬럼 값 그대로 사용해야 함 -->  	
-			<table class="table">
-				<thead>
-				<tr class="tr_td">
-					<th>Chk</th>
-					<th>주문번호</th>
-					<th>커피No</th>
-					<th>메뉴명</th>
-					<th>고객ID</th>
-					<th>고객명</th>
-					<th>주문일자</th>
-				</tr>
-				</thead>
-			
-		
-			<!-- 수정본 -->	
-			<!-- Post 방식으로 받으며 action에 Controller Mapping 값으로 설정(/src/main/java/com/boot/sailing/controller/OrderCon.java) -->
-			<!-- name들은 데이터베이스에서 지정한 컬럼 값 그대로 사용해야 함 -->  	
-			<form name="formTable" id="IdFormTable" method="post" action="/order_updatePrice">
-			<table class="table">
-				<thead>
-				<tr class="tr_td">
-					<th>Chk</th>
-					<th>주문번호</th>
-					<th>커피No</th>
-					<th>메뉴명</th>
-					<th>고객ID</th>
-					<th>고객명</th>
-					<th>주문일자</th>
-				</tr>
-				</thead>
-		
-		
-				<tbody id="t_body">
-				<!--- 데이타 출력 부분 -->
-		
-				<!-- OrderCon에 list에 넣은 값을 호출 -->
-				<!-- Thymeleaf - for loop -->      
-					<tr th:each="prod : ${list}">
-						<td><input type="checkbox" name="chkCoffeeNo" th:value="${prod.getNo()}"></td>
-						<th>주문번호</th>
-						<td th:text="${prod.getNo()}">커피No</th>
-						<td th:text="${prod.getCoffee()}">메뉴명</td>
-						<td th:text="${prod.getCust_id()}">고객ID</td>
-						<td th:text="${prod.getName()}">고객명</td>
-						<td th:text="${prod.getReg_day()}">주문일자</td>
-					</tr>
-					</tbody>
-				</table>
-			  </form>
-			  
-	
-	b. Vo 생성
-	    - /src/main/java/com/boot/sailing/vo/Order_details.java
-		
-			@Data
-			public class Order_details {
-				
-				private String no;
-				private String coffee_no;
-				private String coffee;
-				private String price;
-				private String cust_id;
-				private String name;
-				private String reg_day;
-				
-			}
-			
-			* 데이터베이스 테이블 생성 시 사용한 컬럼들 선언해주면 된다
-	
-	
-	c. Controller
-	    - /src/main/java/com/boot/sailing/controller/OrderCon.java
-		
-			@Controller
-			public class OrderCon {
-				
-				@Autowired
-				OrderSvc orderSvc;
-				
-				/*
-				 * [SELECT] - 주문 내역 전체 조회 	
-				 * 해당 검색 결과만 받기 위하여 List<Order_details> - Vo 사용
-				 */
-				@GetMapping("/order")
-				public String doOrder(Model model) {
+            </form>
+        
+            <script>
+                  /* 현재 시간 날짜에 적용시키기 */
+                  const now = new Date();    // 현재 날짜 및 시간
+                  const time7 = new Date(now.setDate(now.getDate() - 100));    // 기간 설정
+                  document.getElementById("start_date").value= time7.toISOString().slice(0,10);
+                  document.getElementById("end_date").value= new Date().toISOString().slice(0,10);
+                
+                  /* 가격 수정 */
+                  function onModify(){
+                    let _price = prompt("가격을 입력하세요");
+                
+                    /* 취소를 누르면 값이 undefined 이므로 종료 */
+                    if(_price == undefined) {
+                        return;
+                    } 
+                    /* 가격을 입력 안하면 다시입력하라고 재호출 */
+                    else if(_price =="") {
+                        alert("가격을 입력하세요");
+                        onModify();
+                    } 
+                    /* 가격을 입력 했다면 저장 */
+                    else if(_price != "") {
+                        let _frm = document.formTable; // 만들어 놓은 form tag의 name 값!
+                       _frm.hidden_price.value = _price; // hidden tag에 값을 넣어줌
+                       _frm.submit();
+                    }
+                  }
+            </script>
+        
+        
+        
+        
+            <!-- 원본 -->
+            <!-- Post 방식으로 받으며 action에 Controller Mapping 값으로 설정(/src/main/java/com/boot/sailing/controller/OrderCon.java) -->
+            <!-- name들은 데이터베이스에서 지정한 컬럼 값 그대로 사용해야 함 -->      
+            <table class="table">
+                <thead>
+                <tr class="tr_td">
+                    <th>Chk</th>
+                    <th>주문번호</th>
+                    <th>커피No</th>
+                    <th>메뉴명</th>
+                    <th>고객ID</th>
+                    <th>고객명</th>
+                    <th>주문일자</th>
+                </tr>
+                </thead>
+            
+        
+            <!-- 수정본 -->    
+            <!-- Post 방식으로 받으며 action에 Controller Mapping 값으로 설정(/src/main/java/com/boot/sailing/controller/OrderCon.java) -->
+            <!-- name들은 데이터베이스에서 지정한 컬럼 값 그대로 사용해야 함 -->      
+            <form name="formTable" id="IdFormTable" method="post" action="/order_updatePrice">
+            <table class="table">
+                <thead>
+                <tr class="tr_td">
+                    <th>Chk</th>
+                    <th>주문번호</th>
+                    <th>커피No</th>
+                    <th>메뉴명</th>
+                    <th>고객ID</th>
+                    <th>고객명</th>
+                    <th>주문일자</th>
+                </tr>
+                </thead>
+        
+        
+                <tbody id="t_body">
+                <!--- 데이타 출력 부분 -->
+        
+                <!-- OrderCon에 list에 넣은 값을 호출 -->
+                <!-- Thymeleaf - for loop -->      
+                    <tr th:each="prod : ${list}">
+                        <td><input type="checkbox" name="chkCoffeeNo" th:value="${prod.getNo()}"></td>
+                        <th>주문번호</th>
+                        <td th:text="${prod.getNo()}">커피No</th>
+                        <td th:text="${prod.getCoffee()}">메뉴명</td>
+                        <td th:text="${prod.getCust_id()}">고객ID</td>
+                        <td th:text="${prod.getName()}">고객명</td>
+                        <td th:text="${prod.getReg_day()}">주문일자</td>
+                    </tr>
+                    </tbody>
+                </table>
+              </form>
+              
+    
+    b. Vo 생성
+        - /src/main/java/com/boot/sailing/vo/Order_details.java
+        
+            @Data
+            public class Order_details {
+                
+                private String no;
+                private String coffee_no;
+                private String coffee;
+                private String price;
+                private String cust_id;
+                private String name;
+                private String reg_day;
+                
+            }
+            
+            * 데이터베이스 테이블 생성 시 사용한 컬럼들 선언해주면 된다
+    
+    
+    c. Controller
+        - /src/main/java/com/boot/sailing/controller/OrderCon.java
+        
+            @Controller
+            public class OrderCon {
+                
+                @Autowired
+                OrderSvc orderSvc;
+                
+                /*
+                 * [SELECT] - 주문 내역 전체 조회     
+                 * 해당 검색 결과만 받기 위하여 List<Order_details> - Vo 사용
+                 */
+                @GetMapping("/order")
+                public String doOrder(Model model) {
 
-					List<Order_details> list = orderSvc.doList();
-					model.addAttribute("list", list);
-					model.addAttribute("hello", "========== OrderCon - VO 사용 ==========");
-					return "/order/order"; 
-				}  
-			}
-	
-	
-	d. Service 
-	    - /src/main/java/com/boot/sailing/service/OrderSvc.java
-		
-			@Service 
-			@Log4j2
-			public class OrderSvc {
-				
-				@Autowired
-				OrderDao orderDao;
-				
-				/* [SELECT] - 주문 내역 전체 조회(Vo 사용)  */
-				public List<Order_details> doList() {
-					List<Order_details> list = orderDao.doList();
-					
-					log.info(list);
-					return list;
-				}
-			}
-			
-			
-	e. Dao
-	    - /src/main/java/com/boot/sailing/dao/OrderDao.java
-		
-			@Mapper
-			public interface OrderDao {
+                    List<Order_details> list = orderSvc.doList();
+                    model.addAttribute("list", list);
+                    model.addAttribute("hello", "========== OrderCon - VO 사용 ==========");
+                    return "/order/order"; 
+                }  
+            }
+    
+    
+    d. Service 
+        - /src/main/java/com/boot/sailing/service/OrderSvc.java
+        
+            @Service 
+            @Log4j2
+            public class OrderSvc {
+                
+                @Autowired
+                OrderDao orderDao;
+                
+                /* [SELECT] - 주문 내역 전체 조회(Vo 사용)  */
+                public List<Order_details> doList() {
+                    List<Order_details> list = orderDao.doList();
+                    
+                    log.info(list);
+                    return list;
+                }
+            }
+            
+            
+    e. Dao
+        - /src/main/java/com/boot/sailing/dao/OrderDao.java
+        
+            @Mapper
+            public interface OrderDao {
 
-				/* [SELECT] - 주문 내역 전체 조회(Vo 사용)  */
-				 List<Order_details> doList();
-			}
-			
-			* class가 아닌 interface로 Dao를 생성해야 한다.
-			
-	
-	f. Mapper
-	    - /src/main/resources/sqlmapper/OrderDetails.xml
-		
-			<?xml version="1.0" encoding="UTF-8" ?>
-			<!DOCTYPE mapper
-			  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-			  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-			  
-			<!-- namespace = Dao 위치 -->  
-			<mapper namespace="com.boot.sailing.dao.OrderDao">
+                /* [SELECT] - 주문 내역 전체 조회(Vo 사용)  */
+                 List<Order_details> doList();
+            }
+            
+            * class가 아닌 interface로 Dao를 생성해야 한다.
+            
+    
+    f. Mapper
+        - /src/main/resources/sqlmapper/OrderDetails.xml
+        
+            <?xml version="1.0" encoding="UTF-8" ?>
+            <!DOCTYPE mapper
+              PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+              "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+              
+            <!-- namespace = Dao 위치 -->  
+            <mapper namespace="com.boot.sailing.dao.OrderDao">
 
-				<!-- [SELECT] - 주문 내역 전체 조회 -->
-				<!-- id는 Dao의 메소드 이름: doList -->
-				<!-- List<Order_detail> doList(); 에서 type은 Vo -->
-				<select id="doList" resultType="com.boot.sailing.vo.Order_details">
-					SELECT NO, coffee_no, coffee, price, cust_id, NAME,
-					DATE_FORMAT(reg_day,'%Y.%m.%d') AS reg_day
-					FROM order_list
-				</select>
+                <!-- [SELECT] - 주문 내역 전체 조회 -->
+                <!-- id는 Dao의 메소드 이름: doList -->
+                <!-- List<Order_detail> doList(); 에서 type은 Vo -->
+                <select id="doList" resultType="com.boot.sailing.vo.Order_details">
+                    SELECT NO, coffee_no, coffee, price, cust_id, NAME,
+                    DATE_FORMAT(reg_day,'%Y.%m.%d') AS reg_day
+                    FROM order_list
+                </select>
 
-			</mapper>
+            </mapper>
